@@ -123,11 +123,9 @@ int main()
 {
 	NeuralNetwork nn = *( new NeuralNetwork(4, *(new InputLayer(3))));
 	
-	DenseLayer dl = *(new DenseLayer(5, 3));
+	nn << *(new DenseLayer(5, 3)) << *(new DenseLayer(5, 5)) << *(new DenseLayer(3, 5)) ;
 
-	nn << dl;
-
-	std::cout << nn.index << std::endl;
+	nn.print();
 
 	return 0;
 }

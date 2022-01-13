@@ -16,11 +16,20 @@ NeuralNetwork::NeuralNetwork(int nlayers, InputLayer il)
 	this->layers[0] =  il;
 }
 
-NeuralNetwork operator << (NeuralNetwork &nn, Layer layer)
+void NeuralNetwork::print()
+{
+	for (int i = 0; i < this->nlayers; ++i)
+	{
+		std::cout << i << "th layer" << std::endl;
+		this->layers[i].print();
+	}
+}
+
+NeuralNetwork operator << (NeuralNetwork nn, Layer &layer)
 {
 	nn.layers[nn.index] = layer;
 	nn.index++;
-	return nn;
+	return (nn);
 }
 
 Layer::Layer()
@@ -136,4 +145,5 @@ DenseLayer::DenseLayer(int numberofcells, int prevsize)
 		buff[i] = *(new Cell(prevsize));
 	}
 	this->layer = buff;
+	this->ncells = numberofcells;
 }

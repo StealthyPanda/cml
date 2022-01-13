@@ -61,6 +61,8 @@ public:
 	int nlayers, index;
 	NeuralNetwork(int nlayers);
 	NeuralNetwork(int nlayers, InputLayer il);
+
+	void print();
 };
 
-NeuralNetwork operator << (NeuralNetwork &nn, Layer layer);
+NeuralNetwork operator << (NeuralNetwork nn, Layer &layer);

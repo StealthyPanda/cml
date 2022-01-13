@@ -63,6 +63,8 @@ public:
 	NeuralNetwork(int nlayers, InputLayer il);
 
 	void print();
+	void save();
+	void save(const char* savefilename);
 };
 
 NeuralNetwork operator << (NeuralNetwork nn, Layer &layer);

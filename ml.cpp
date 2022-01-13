@@ -1,5 +1,9 @@
 #include "ml.h"
+#ifndef IOSTREAM
+#define IOSTREAM
 #include <iostream>
+#endif
+#include <fstream>
 
 NeuralNetwork::NeuralNetwork(int nlayers)
 {
@@ -146,4 +150,42 @@ DenseLayer::DenseLayer(int numberofcells, int prevsize)
 	}
 	this->layer = buff;
 	this->ncells = numberofcells;
+}
+
+void NeuralNetwork::save(const char* rawname)
+{
+	std::fstream savefile;
+
+	//string filename = rawname + ".nn";
+
+	savefile.open(rawname, std::ios::out);
+
+	if (savefile)
+	{
+		for (int i = 0; i < this->nlayers; ++i)
+		{
+			Layer bufflayer = this->layers[i];
+			for (int j = 0; j < bufflayer.ncells; ++j)
+			{
+				Cell buffcell = bufflayer.layer[j];
+				for (int k = 0; k < buffcell.nweights; ++k)
+				{
+					savefile << buffcell.weights[k] << ",";
+				}
+				savefile << buffcell.bias << "|";
+			}
+			savefile << "\n";
+		}
+		savefile.close();
+	}
+	else
+	{
+		std::cout << "File saving failed" << std::endl;
+	}
+
+}
+
+void NeuralNetwork::save()
+{
+	save("Jarvis");
 }

@@ -1,5 +1,9 @@
+#ifndef IOSTREAM
+#define IOSTREAM
 #include <iostream>
+#endif
 #include "ml.h"
+//#include <fstream>
 
 /*int main()
 {
@@ -119,6 +123,7 @@ public:
 };
 
 
+
 int main()
 {
 	NeuralNetwork nn = *( new NeuralNetwork(4, *(new InputLayer(3))));
@@ -126,6 +131,8 @@ int main()
 	nn << *(new DenseLayer(5, 3)) << *(new DenseLayer(5, 5)) << *(new DenseLayer(3, 5)) ;
 
 	nn.print();
+
+	nn.save("Friday.nn");
 
 	return 0;
 }

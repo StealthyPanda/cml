@@ -124,7 +124,7 @@ public:
 
 
 
-int main()
+/*int main()
 {
 	NeuralNetwork nn = *( new NeuralNetwork(4, *(new InputLayer(3))));
 	
@@ -132,7 +132,27 @@ int main()
 
 	nn.print();
 
-	nn.save("Friday.nn");
+	nn.save("Saturday.nn");
+
+	ml::Vector v = ml::Vector(3, 1);
+	v.print();
+
+	return 0;
+}*/
+
+int main()
+{
+	long double input[] = {24, -3, 1, 6.9, 420, 3.14, -3.14, -420};
+	ml::Vector v = ml::Vector(sizeof(input)/sizeof(long double), input);
+
+
+	InputLayer il = InputLayer(sizeof(input)/sizeof(long double));
+
+
+	ml::Vector output = (v * il);
+
+	output.print();
+	std::cout << output.size << std::endl;
 
 	return 0;
 }

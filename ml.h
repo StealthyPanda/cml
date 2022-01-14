@@ -61,10 +61,33 @@ public:
 	int nlayers, index;
 	NeuralNetwork(int nlayers);
 	NeuralNetwork(int nlayers, InputLayer il);
+	//todo this:
+	//NeuralNetwork(NeuralNetwork &nn);
 
 	void print();
 	void save();
 	void save(const char* savefilename);
 };
 
+namespace ml
+{
+	class Vector
+	{
+	public:
+		long double* list;
+		int size;
+		Vector(int size);
+		Vector(int size, long double initval);
+		Vector(int size, long double* initvals);
+
+		void print();
+	};
+}
+
 NeuralNetwork operator << (NeuralNetwork nn, Layer &layer);
+
+long double operator * (Cell cell, ml::Vector v);
+long double operator * (ml::Vector v, Cell cell);
+
+ml::Vector operator * (Layer layer, ml::Vector v);
+ml::Vector operator * (ml::Vector v, Layer layer);

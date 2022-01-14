@@ -189,3 +189,87 @@ void NeuralNetwork::save()
 {
 	save("Jarvis");
 }
+
+ml::Vector::Vector(int size)
+{
+	this->list = new long double[size];
+	this->size = size;
+	for (int i = 0; i < size; ++i)
+	{
+		this->list[i] = 0;
+	}
+}
+
+ml::Vector::Vector(int size, long double initval)
+{
+	this->list = new long double[size];
+	this->size = size;
+	for (int i = 0; i < size; ++i)
+	{
+		this->list[i] = initval;
+	}
+}
+
+ml::Vector::Vector(int size, long double* initvals)
+{
+	this->list = new long double[size];
+	this->size = size;
+	for (int i = 0; i < size; ++i)
+	{
+		this->list[i] = initvals[i];
+	}
+}
+
+
+void ml::Vector::print()
+{
+	std::cout << "[";
+	for (int i = 0; i < (this->size - 1); ++i)
+	{
+		std::cout << this->list[i] << ", ";
+	}
+	std::cout << this->list[this->size - 1] <<  "]\n";
+}
+
+long double operator * (Cell cell, ml::Vector v)
+{
+
+	long double output = 0;
+	for (int i = 0; i < cell.nweights; ++i)
+	{
+		output += (v.list[i] * cell.weights[i]);
+	}
+	output += cell.bias;
+	return output;
+}
+
+long double operator * (ml::Vector v, Cell cell)
+{
+	return (cell * v);
+}
+
+
+
+
+
+
+ml::Vector operator * (ml::Vector v, Layer layer)
+{
+	//checks if all cells have nweights the same as the number of values in the vector.
+	for (int i = 0; i < layer.ncells; ++i)
+	{
+		if (layer.layer[i].nweights != v.size) return 0;
+	}
+
+	ml::Vector output = *(new ml::Vector(layer.ncells));
+	for (int i = 0; i < output.size; ++i)
+	{
+		output.list[i] = (v * layer.layer[i]);
+	}
+	return output;
+}
+
+ml::Vector operator * (Layer layer, ml::Vector v)
+{
+	return (v * layer);
+}

@@ -29,7 +29,7 @@ void NeuralNetwork::print()
 	}
 }
 
-NeuralNetwork operator << (NeuralNetwork nn, Layer &layer)
+NeuralNetwork operator << (NeuralNetwork &nn, Layer &layer)
 {
 	nn.layers[nn.index] = layer;
 	nn.index++;
@@ -98,6 +98,21 @@ Cell::Cell()
 	this->nweights = 1;
 }
 
+Cell::Cell(int size, bool default1)
+{
+	long double *buffer = new long double[size];
+	for (int i = 0; i < size; ++i)
+	{
+		if(default1) 
+			{buffer[i] = 1;}
+		else
+			{buffer[i] = 0;}
+	}
+	this->weights = buffer;
+	this->bias = 0;
+	this->nweights = size;
+}
+
 
 //todo: somehow figure out length of array from its pointer
 Cell::Cell(const long double weights[], const int nweights, const long double bias)
@@ -146,7 +161,18 @@ DenseLayer::DenseLayer(int numberofcells, int prevsize)
 	Cell *buff = new Cell[numberofcells];
 	for (int i = 0; i < numberofcells; ++i)
 	{
-		buff[i] = *(new Cell(prevsize));
+		buff[i] = *(new Cell(prevsize, true));
+	}
+	this->layer = buff;
+	this->ncells = numberofcells;
+}
+
+DenseLayer::DenseLayer(int numberofcells)
+{
+	Cell *buff = new Cell[numberofcells];
+	for (int i = 0; i < numberofcells; ++i)
+	{
+		buff[i] = *(new Cell());
 	}
 	this->layer = buff;
 	this->ncells = numberofcells;
@@ -272,4 +298,21 @@ ml::Vector operator * (ml::Vector v, Layer layer)
 ml::Vector operator * (Layer layer, ml::Vector v)
 {
 	return (v * layer);
+}
+
+
+ml::Vector operator * (ml::Vector v, NeuralNetwork nn)
+{
+	ml::Vector output = v;
+	//ml::Vector buffer = v;
+	for (int i = 0; i < nn.index; ++i)
+	{
+		output = (nn.layers[i] * output);
+	}
+	return output;
+}
+
+ml::Vector operator * (NeuralNetwork nn, ml::Vector v)
+{
+	return (v * nn);
 }

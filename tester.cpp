@@ -142,17 +142,41 @@ public:
 
 int main()
 {
-	long double input[] = {24, -3, 1, 6.9, 420, 3.14, -3.14, -420};
-	ml::Vector v = ml::Vector(sizeof(input)/sizeof(long double), input);
+	long double input[] = {1, 2, 3};
+	int length = sizeof(input)/sizeof(long double);
+	ml::Vector v = ml::Vector(length, input);
 
 
-	InputLayer il = InputLayer(sizeof(input)/sizeof(long double));
+	InputLayer il = InputLayer(length);
+	DenseLayer dl1 = DenseLayer(5, length);
+	DenseLayer dl2 = DenseLayer(3, 5);
 
+	dl1.layer[1].weights[0] = -2;
+	dl1.layer[1].weights[1] = -1;
+	dl1.layer[1].weights[2] = 0;
 
-	ml::Vector output = (v * il);
+	NeuralNetwork nn = NeuralNetwork(3, il);
+	std::cout << nn.index << std::endl;
+	nn << dl1;
+	nn << dl2;
 
+	for (int i = 0; i < nn.nlayers; ++i)
+	{
+		nn.layers[i].print();
+		std::cout << std::endl;
+	}
+
+	std::cout << nn.index << std::endl;
+
+	ml::Vector output = (v * nn);
 	output.print();
-	std::cout << output.size << std::endl;
+
+	ml::Vector output2 = (v * dl1);
+	output2.print();
+
+	ml::Vector output3 = (v * dl2);
+	output3.print();
+
 
 	return 0;
 }

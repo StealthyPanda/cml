@@ -11,7 +11,10 @@ public:
 	int nweights;
 
 	Cell();
-	Cell(int size);
+	//weights are initialised with 0
+	Cell(int nweights);
+	//if default1 is true, then all weights are initialised with 1; else 0
+	Cell(int nweights, bool default1);
 	Cell(const long double weights[], const int nweights, const long double bias);
 };
 
@@ -49,8 +52,8 @@ class DenseLayer : public Layer
 
 public:
 	DenseLayer();
+	DenseLayer(int numberofcells);
 	DenseLayer(int numberofcells, int prevoutputn);
-
 };
 
 
@@ -84,10 +87,13 @@ namespace ml
 	};
 }
 
-NeuralNetwork operator << (NeuralNetwork nn, Layer &layer);
+NeuralNetwork operator << (NeuralNetwork &nn, Layer &layer);
 
 long double operator * (Cell cell, ml::Vector v);
 long double operator * (ml::Vector v, Cell cell);
 
 ml::Vector operator * (Layer layer, ml::Vector v);
 ml::Vector operator * (ml::Vector v, Layer layer);
+
+ml::Vector operator * (NeuralNetwork nn, ml::Vector v);
+ml::Vector operator * (ml::Vector v, NeuralNetwork nn);

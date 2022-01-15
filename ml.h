@@ -72,6 +72,21 @@ public:
 	void save(const char* savefilename);
 };
 
+
+class Trainer
+{
+public:
+	Trainer();
+	Trainer(const char* datafilename);
+
+	long double** trainingdatasets;
+	long double** traininglabels;
+
+	long double** testingdatasets;
+	long double** testinglabels;
+};
+
+
 namespace ml
 {
 	class Vector

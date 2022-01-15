@@ -4,6 +4,7 @@
 #endif
 #include "ml.h"
 //#include <fstream>
+#include <sstream>
 
 /*int main()
 {
@@ -140,7 +141,7 @@ public:
 	return 0;
 }*/
 
-int main()
+/*int main()
 {
 	long double input[] = {2, 2, 3};
 	int length = sizeof(input)/sizeof(long double);
@@ -150,6 +151,7 @@ int main()
 	InputLayer il = InputLayer(length);
 	DenseLayer dl1 = DenseLayer(5, length);
 	DenseLayer dl2 = DenseLayer(3, 5);
+	DenseLayer dl3 = DenseLayer(1, 3);
 
 	dl1.layer[1].weights[0] = -2;
 	dl1.layer[1].weights[1] = -1;
@@ -159,10 +161,15 @@ int main()
 	dl2.layer[0].weights[3] = 0;
 	dl2.layer[0].weights[2] = 0;
 
-	NeuralNetwork nn = NeuralNetwork(3, il);
+	dl3.layer[0].weights[0] = -1;
+	dl3.layer[0].weights[1] = 0;
+	dl3.layer[0].weights[2] = 1;
+
+	NeuralNetwork nn = NeuralNetwork(4, il);
 	std::cout << nn.index << std::endl;
 	nn << dl1;
 	nn << dl2;
+	nn << dl3;
 
 	for (int i = 0; i < nn.nlayers; ++i)
 	{
@@ -172,15 +179,38 @@ int main()
 
 	std::cout << nn.index << std::endl;
 
-	ml::Vector output = (v * nn);
+	ml::Vector output = (nn*v);
 	output.print();
 
 	ml::Vector output2 = (v * dl1);
 	output2.print();
 
-	ml::Vector output3 = (v * dl2);
+	ml::Vector output3 = ((v * dl1) * dl2);
 	output3.print();
 
+	nn.save("Sunday.nn");
+
+
+	return 0;
+}*/
+
+
+int main()
+{
+
+	Trainer t = Trainer("test.td");
+
+	//std::string bruh = "-3.14159";
+
+	/*std::stringstream bruhs(bruh);
+	//long double printer = (long double) bruh;
+
+	int buffi;
+	for(int i = 0; i < 6; i++)
+	{
+		//bruhs >> buffi;
+		std::cout << bruh[i] << std::endl;
+	}*/
 
 	return 0;
 }

@@ -4,6 +4,8 @@
 #include <iostream>
 #endif
 #include <fstream>
+//#include <quadmath.h>
+#include <gmpxx.h>
 
 NeuralNetwork::NeuralNetwork(int nlayers)
 {
@@ -315,4 +317,22 @@ ml::Vector operator * (ml::Vector v, NeuralNetwork nn)
 ml::Vector operator * (NeuralNetwork nn, ml::Vector v)
 {
 	return (v * nn);
+}
+
+
+Trainer::Trainer()
+{
+
+}
+
+Trainer::Trainer(const char* filename)
+{
+	std::fstream datafile;
+	datafile.open(filename, std::ios::in);
+	std::string carr;
+	//__float128 buffld;
+	mpz_class buffld;
+	datafile >> buffld;
+	std::cout << (buffld * buffld) << std::endl;
+	datafile.close();
 }

@@ -142,7 +142,7 @@ public:
 
 int main()
 {
-	long double input[] = {1, 2, 3};
+	long double input[] = {2, 2, 3};
 	int length = sizeof(input)/sizeof(long double);
 	ml::Vector v = ml::Vector(length, input);
 
@@ -154,6 +154,10 @@ int main()
 	dl1.layer[1].weights[0] = -2;
 	dl1.layer[1].weights[1] = -1;
 	dl1.layer[1].weights[2] = 0;
+
+	dl2.layer[0].weights[4] = 0;
+	dl2.layer[0].weights[3] = 0;
+	dl2.layer[0].weights[2] = 0;
 
 	NeuralNetwork nn = NeuralNetwork(3, il);
 	std::cout << nn.index << std::endl;

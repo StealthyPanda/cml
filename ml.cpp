@@ -4,8 +4,16 @@
 #include <iostream>
 #endif
 #include <fstream>
-//#include <quadmath.h>
-#include <gmpxx.h>
+#include <quadmath.h>
+//#include <gmpxx.h>
+
+void print(const __float128& afloat)
+{
+	char buffer[35];
+	//"%+-#*.20Qe"
+	quadmath_snprintf(buffer, sizeof buffer, "%+-#*.30Qe", 20, afloat);
+	std::cout << buffer << std::endl;
+}
 
 NeuralNetwork::NeuralNetwork(int nlayers)
 {
@@ -328,11 +336,17 @@ Trainer::Trainer()
 Trainer::Trainer(const char* filename)
 {
 	std::fstream datafile;
-	datafile.open(filename, std::ios::in);
+	//datafile.open(filename, std::ios::in);
 	std::string carr;
-	//__float128 buffld;
-	mpz_class buffld;
-	datafile >> buffld;
-	std::cout << (buffld * buffld) << std::endl;
-	datafile.close();
+
+	
+	__float128 buffld = 0.123q;
+	//buffld = "0.1234567891011121314151617181920"_mpq;
+
+	//int bruh = buffld.set_str(val, 10);
+	__float128 bruh = (buffld * buffld);
+	print(bruh);
+
+	std::cout << (bruh < 0.015) << std::endl;
+	//datafile.close();
 }

@@ -1,6 +1,6 @@
 
 
-int testfunc();
+void print(const __float128& afloat);
 
 
 class Cell

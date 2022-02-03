@@ -1,13 +1,18 @@
-
+#include <ostream>
 
 void print(const __float128& afloat);
+
+std::ostream& operator<< (std::ostream& stream, __float128 afloat);
+
+char* strepr(__float128 afloat);
+
 
 
 class Cell
 {
 public:
-	long double* weights;
-	long double bias;
+	__float128* weights;
+	__float128 bias;
 	int nweights;
 
 	Cell();
@@ -15,7 +20,7 @@ public:
 	Cell(int nweights);
 	//if default1 is true, then all weights are initialised with 1; else 0
 	Cell(int nweights, bool default1);
-	Cell(const long double weights[], const int nweights, const long double bias);
+	Cell(const __float128 weights[], const int nweights, const __float128 bias);
 };
 
 
@@ -92,11 +97,11 @@ namespace ml
 	class Vector
 	{
 	public:
-		long double* list;
+		__float128* list;
 		int size;
 		Vector(int size);
-		Vector(int size, long double initval);
-		Vector(int size, long double* initvals);
+		Vector(int size, __float128 initval);
+		Vector(int size, __float128* initvals);
 
 		void print();
 	};
@@ -104,8 +109,8 @@ namespace ml
 
 NeuralNetwork operator << (NeuralNetwork &nn, Layer &layer);
 
-long double operator * (Cell cell, ml::Vector v);
-long double operator * (ml::Vector v, Cell cell);
+__float128 operator * (Cell cell, ml::Vector v);
+__float128 operator * (ml::Vector v, Cell cell);
 
 ml::Vector operator * (Layer layer, ml::Vector v);
 ml::Vector operator * (ml::Vector v, Layer layer);

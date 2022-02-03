@@ -4,7 +4,7 @@
 #endif
 #include "ml.h"
 //#include <fstream>
-#include <sstream>
+//#include <sstream>
 
 /*int main()
 {
@@ -195,10 +195,10 @@ public:
 }*/
 
 
-int main()
+/*int main()
 {
 
-	Trainer t = Trainer("test.td");
+	//Trainer t = Trainer("test.td");
 
 	//std::string bruh = "-3.14159";
 
@@ -210,7 +210,26 @@ int main()
 	{
 		//bruhs >> buffi;
 		std::cout << bruh[i] << std::endl;
-	}*/
+	}
 
 	return 0;
+}*/
+
+using namespace ml;
+
+int main()
+{
+	NeuralNetwork nn = NeuralNetwork(3);
+	nn << *(new InputLayer(2));
+	nn << *(new DenseLayer(4, 2));
+	nn << *(new DenseLayer(2, 4));
+
+	nn.print();
+
+	__float128 input[2] = {(22.0q/7.0q), 1.0q};
+
+	Vector output = (nn * Vector(2, input));
+
+	output.print();
+
 }

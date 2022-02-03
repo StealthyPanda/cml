@@ -5,7 +5,11 @@
 #endif
 #include <fstream>
 #include <quadmath.h>
+//#include <ostream>
 //#include <gmpxx.h>
+
+#define FPREC 35
+#define FWIDTH 25
 
 void print(const __float128& afloat)
 {
@@ -13,7 +17,28 @@ void print(const __float128& afloat)
 	//"%+-#*.20Qe"
 	//%+-#46.*Qe
 	quadmath_snprintf(buffer, sizeof buffer, "%+-#46.*Qe", 20, afloat);
-	std::cout << buffer << std::endl;
+	std::cout << buffer;
+}
+
+std::ostream& operator<< (std::ostream& stream, __float128 afloat)
+{
+	char buffer[FPREC];
+
+	quadmath_snprintf(buffer, sizeof buffer, "%+-#46.*Qe", FWIDTH, afloat);
+
+	stream << buffer;
+
+	return stream;
+
+}
+
+char* strepr(__float128 afloat)
+{
+	static char buffer[FPREC];
+
+	quadmath_snprintf(buffer, sizeof buffer, "%+-#46.*Qe", FWIDTH, afloat);
+
+	return buffer;
 }
 
 NeuralNetwork::NeuralNetwork(int nlayers)
@@ -92,44 +117,44 @@ void Layer::print()
 
 Cell::Cell(int size)
 {
-	long double *buffer = new long double[size];
+	__float128 *buffer = new __float128[size];
 	for (int i = 0; i < size; ++i)
 	{
-		buffer[i] = 0;
+		buffer[i] = 0.0q;
 	}
 	this->weights = buffer;
-	this->bias = 0;
+	this->bias = 0.0q;
 	this->nweights = size;
 }
 
 Cell::Cell()
 {
-	long double buffer[1] = {0};
+	__float128 buffer[1] = {0.0q};
 	this->weights = buffer;
-	this->bias = 0;
+	this->bias = 0.0q;
 	this->nweights = 1;
 }
 
 Cell::Cell(int size, bool default1)
 {
-	long double *buffer = new long double[size];
+	__float128 *buffer = new __float128[size];
 	for (int i = 0; i < size; ++i)
 	{
 		if(default1) 
-			{buffer[i] = 1;}
+			{buffer[i] = 1.0q;}
 		else
-			{buffer[i] = 0;}
+			{buffer[i] = 0.0q;}
 	}
 	this->weights = buffer;
-	this->bias = 0;
+	this->bias = 0.0q;
 	this->nweights = size;
 }
 
 
 //todo: somehow figure out length of array from its pointer
-Cell::Cell(const long double weights[], const int nweights, const long double bias)
+Cell::Cell(const __float128 weights[], const int nweights, const __float128 bias)
 {
-	long double *buffer = new long double[nweights];
+	__float128 *buffer = new __float128[nweights];
 	for (int i = 0; i < nweights; ++i)
 	{
 		buffer[i] = weights[i];
@@ -156,7 +181,7 @@ InputLayer::InputLayer(int size)
 	for (int i = 0; i < size; ++i)
 	{
 		Cell buffcell = *(new Cell(size));
-		buffcell.weights[i] = 1;
+		buffcell.weights[i] = 1.0q;
 		buffer[i] = buffcell;
 	}
 	this->layer = buffer;
@@ -208,9 +233,9 @@ void NeuralNetwork::save(const char* rawname)
 				Cell buffcell = bufflayer.layer[j];
 				for (int k = 0; k < buffcell.nweights; ++k)
 				{
-					savefile << buffcell.weights[k] << ",";
+					savefile << strepr(buffcell.weights[k]) << ",";
 				}
-				savefile << buffcell.bias << "|";
+				savefile << strepr(buffcell.bias) << "|";
 			}
 			savefile << "\n";
 		}
@@ -230,17 +255,17 @@ void NeuralNetwork::save()
 
 ml::Vector::Vector(int size)
 {
-	this->list = new long double[size];
+	this->list = new __float128[size];
 	this->size = size;
 	for (int i = 0; i < size; ++i)
 	{
-		this->list[i] = 0;
+		this->list[i] = 0.0q;
 	}
 }
 
-ml::Vector::Vector(int size, long double initval)
+ml::Vector::Vector(int size, __float128 initval)
 {
-	this->list = new long double[size];
+	this->list = new __float128[size];
 	this->size = size;
 	for (int i = 0; i < size; ++i)
 	{
@@ -248,9 +273,9 @@ ml::Vector::Vector(int size, long double initval)
 	}
 }
 
-ml::Vector::Vector(int size, long double* initvals)
+ml::Vector::Vector(int size, __float128* initvals)
 {
-	this->list = new long double[size];
+	this->list = new __float128[size];
 	this->size = size;
 	for (int i = 0; i < size; ++i)
 	{
@@ -265,14 +290,17 @@ void ml::Vector::print()
 	for (int i = 0; i < (this->size - 1); ++i)
 	{
 		std::cout << this->list[i] << ", ";
+		//print(this->list[i]);
+		std::cout << ", ";
 	}
-	std::cout << this->list[this->size - 1] <<  "]\n";
+	//print(this->list[this->size - 1]);
+	std::cout << this->list[this->size - 1] << "]\n";
 }
 
-long double operator * (Cell cell, ml::Vector v)
+__float128 operator * (Cell cell, ml::Vector v)
 {
 
-	long double output = 0;
+	__float128 output = 0.0q;
 	for (int i = 0; i < cell.nweights; ++i)
 	{
 		output += (v.list[i] * cell.weights[i]);
@@ -281,7 +309,7 @@ long double operator * (Cell cell, ml::Vector v)
 	return output;
 }
 
-long double operator * (ml::Vector v, Cell cell)
+__float128 operator * (ml::Vector v, Cell cell)
 {
 	return (cell * v);
 }
@@ -335,7 +363,7 @@ Trainer::Trainer()
 
 }
 
-Trainer::Trainer(const char* filename)
+/*Trainer::Trainer(const char* filename)
 {
 	std::fstream datafile;
 	//datafile.open(filename, std::ios::in);
@@ -351,4 +379,9 @@ Trainer::Trainer(const char* filename)
 
 	std::cout << (buffld < 0.1) << std::endl;
 	//datafile.close();
+}*/
+
+Trainer::Trainer(const char* filename)
+{
+
 }

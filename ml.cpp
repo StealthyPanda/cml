@@ -11,7 +11,8 @@ void print(const __float128& afloat)
 {
 	char buffer[35];
 	//"%+-#*.20Qe"
-	quadmath_snprintf(buffer, sizeof buffer, "%+-#*.30Qe", 20, afloat);
+	//%+-#46.*Qe
+	quadmath_snprintf(buffer, sizeof buffer, "%+-#46.*Qe", 20, afloat);
 	std::cout << buffer << std::endl;
 }
 
@@ -68,6 +69,7 @@ Layer Layer::append(Cell &cell)
 {
 	this->layer[this->ncells] = cell;
 	this->ncells++;
+	return *(this);
 }
 
 void Layer::print()
@@ -340,13 +342,13 @@ Trainer::Trainer(const char* filename)
 	std::string carr;
 
 	
-	__float128 buffld = 0.123q;
+	__float128 buffld = 0.001234567891011121314151618q;
 	//buffld = "0.1234567891011121314151617181920"_mpq;
 
 	//int bruh = buffld.set_str(val, 10);
 	__float128 bruh = (buffld * buffld);
-	print(bruh);
+	print(buffld);
 
-	std::cout << (bruh < 0.015) << std::endl;
+	std::cout << (buffld < 0.1) << std::endl;
 	//datafile.close();
 }

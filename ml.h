@@ -84,11 +84,11 @@ public:
 	Trainer();
 	Trainer(const char* datafilename);
 
-	long double** trainingdatasets;
-	long double** traininglabels;
+	__float128** trainingdatasets;
+	__float128** traininglabels;
 
-	long double** testingdatasets;
-	long double** testinglabels;
+	__float128** testingdatasets;
+	__float128** testinglabels;
 };
 
 
@@ -107,7 +107,7 @@ namespace ml
 	};
 }
 
-NeuralNetwork operator << (NeuralNetwork &nn, Layer &layer);
+NeuralNetwork& operator << (NeuralNetwork &nn, Layer &layer);
 
 __float128 operator * (Cell cell, ml::Vector v);
 __float128 operator * (ml::Vector v, Cell cell);

@@ -5,8 +5,6 @@
 #endif
 #include <fstream>
 #include <quadmath.h>
-//#include <ostream>
-//#include <gmpxx.h>
 
 #define FPREC 35
 #define FWIDTH 25
@@ -65,7 +63,7 @@ void NeuralNetwork::print()
 	}
 }
 
-NeuralNetwork operator << (NeuralNetwork &nn, Layer &layer)
+NeuralNetwork& operator << (NeuralNetwork &nn, Layer &layer)
 {
 	nn.layers[nn.index] = layer;
 	nn.index++;
@@ -291,7 +289,7 @@ void ml::Vector::print()
 	{
 		std::cout << this->list[i] << ", ";
 		//print(this->list[i]);
-		std::cout << ", ";
+		//std::cout << ", ";
 	}
 	//print(this->list[this->size - 1]);
 	std::cout << this->list[this->size - 1] << "]\n";
@@ -383,5 +381,16 @@ Trainer::Trainer()
 
 Trainer::Trainer(const char* filename)
 {
+	std::fstream datafile;
+	datafile.open(filename, std::ios::in);
+	std::string buff;
 
+	datafile >> buff;
+
+	__float128 bfloat = strtoflt128 (buff.c_str(), NULL);
+
+	std::cout << buff << std::endl;
+	std::cout << bfloat << std::endl;
+
+	datafile.close();
 }

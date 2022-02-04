@@ -1,58 +1,35 @@
 #include <iostream>
 #include "ml.h"
 
+using namespace ml;
 
-class bruh
+//g++ runner.cpp ml.cpp -o builds/runner -std=gnu++11 -lquadmath
+/*int main()
 {
-public:
-	int publicbruh = 420;
-	bruh();
-	static void printsomin();
-	friend void operator<<(const std::ostream &co, const bruh &ab);
-	int returnsomin();
-private:
-	int epicbruh;
-};
+	NeuralNetwork nn = NeuralNetwork(4);
 
-void operator<<(const std::ostream &co, const bruh &ab)
-{
-	co << ab.returnsomin();
-}
+	InputLayer input = InputLayer(2);
+	DenseLayer middle1 = DenseLayer(4, 2);
+	DenseLayer middle2 = DenseLayer(4, 4);
+	DenseLayer output = DenseLayer(2, 4);
 
+	nn << input << middle1 << middle2 << output;
 
+	nn.print();
 
+	__float128 inp[2] = {3.0q, -1.0q};
 
-bruh::bruh()
-{
-	return;
-}
+	Vector inpvect = Vector(2, inp);
 
-void bruh::printsomin()
-{
-	std::cout << "Inside printsomin" << std::endl;
-}
+	(nn*inpvect).print();
 
-int bruh::returnsomin()
-{
-	return 69;
-}
-
-
-using namespace std;
+	return 0;
+}*/
 
 int main()
 {
-	
-	
-	bruh abruh = bruh();
 
-	bruh* pointstoabruh = &abruh;
+	Trainer obadiah = Trainer("test.td");
 
-	pointstoabruh->printsomin();
-	bruh::printsomin();
-
-	cout << *(pointstoabruh);
-
-	
 	return 0;
 }

@@ -7,6 +7,14 @@ std::ostream& operator<< (std::ostream& stream, __float128 afloat);
 char* strepr(__float128 afloat);
 
 
+struct dataset
+{
+public:
+	__float128 *inputs;
+	__float128 *outputs;
+};
+
+
 
 class Cell
 {
@@ -46,6 +54,7 @@ public:
 class InputLayer : public Layer
 {
 public:
+	//int ninputs;
 	InputLayer();
 	InputLayer(int ninputs);
 
@@ -56,6 +65,7 @@ class DenseLayer : public Layer
 {
 
 public:
+	//int noutputs;
 	DenseLayer();
 	DenseLayer(int numberofcells);
 	DenseLayer(int numberofcells, int prevoutputn);
@@ -67,6 +77,7 @@ class NeuralNetwork
 public:
 	Layer *layers;
 	int nlayers, index;
+	NeuralNetwork();
 	NeuralNetwork(int nlayers);
 	NeuralNetwork(int nlayers, InputLayer il);
 	//todo this:
@@ -81,8 +92,12 @@ public:
 class Trainer
 {
 public:
+	//dataset testd;
+	dataset *datasets;
+	int ninps, nouts;
+	NeuralNetwork nn;
 	Trainer();
-	Trainer(const char* datafilename);
+	Trainer(NeuralNetwork &nn, const char* datafilename, int ndatasets);
 
 	__float128** trainingdatasets;
 	__float128** traininglabels;

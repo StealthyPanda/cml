@@ -28,8 +28,20 @@ using namespace ml;
 
 int main()
 {
+	NeuralNetwork  jarvis = NeuralNetwork(2);
 
-	Trainer obadiah = Trainer("test.td");
+	InputLayer il = InputLayer(2);
+	DenseLayer dl = DenseLayer(4);
+	DenseLayer ol = DenseLayer(2);
+
+	jarvis << il << dl << ol;
+
+	Trainer obadiah = Trainer(jarvis, "test.td", 19);
+
+	for(int i = 0; i < 19; i++)
+	{
+		std::cout << i << " " << obadiah.datasets[i].outputs[0] << std::endl;
+	}
 
 	return 0;
 }

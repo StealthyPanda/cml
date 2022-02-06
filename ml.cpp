@@ -379,18 +379,69 @@ Trainer::Trainer()
 	//datafile.close();
 }*/
 
-Trainer::Trainer(const char* filename)
+NeuralNetwork::NeuralNetwork()
 {
+}
+
+Trainer::Trainer(NeuralNetwork &nn, const char* filename, int ndatasets)
+{
+	this->nn = nn;
+	this->ninps = this->nn.layers[0].ncells;
+	this->nouts = this->nn.layers[this->nn.nlayers].ncells;
+
 	std::fstream datafile;
 	datafile.open(filename, std::ios::in);
 	std::string buff;
 
-	datafile >> buff;
+	dataset *bdatasets = new dataset[ndatasets];
+
+	std::cout << this->ninps << " " << this->nouts << std::endl;
+
+	/*datafile >> buff;
 
 	__float128 bfloat = strtoflt128 (buff.c_str(), NULL);
 
 	std::cout << buff << std::endl;
-	std::cout << bfloat << std::endl;
+	std::cout << bfloat << std::endl;*/
+
+	//dataset ds ;
+	//static __float128 bruh[20];
+
+	/*for(int i = 0; i < ndatasets; i++)
+	{
+		datafile >> buff;
+		bruh[i] = strtoflt128(buff.c_str(), NULL);
+		//bruh[i] = bfloat;
+		if (i == 0) std::cout << buff << std::endl;
+	}
+	ds.inputs = bruh;
+	this->testd = ds;*/
+
+
+	for (int i = 0; i < ndatasets; i++)
+	{
+
+		dataset ds;
+		//static __float128 inputs[nn.layers[0].ncells], outputs[nn.layers[nn.nlayers].ncells];
+		__float128* inputs = new __float128[nn.layers[0].ncells];
+		__float128* outputs = new __float128[nn.layers[nn.nlayers].ncells];
+		for (int j = 0; j < this->ninps; j++)
+		{
+			datafile >> buff;
+			inputs[j] = strtoflt128(buff.c_str(), NULL);
+		}
+		for (int k = 0; k < this->nouts; k++)
+		{
+			datafile >>buff;
+			outputs[k] = strtoflt128(buff.c_str(), NULL);
+		}
+		ds.inputs = inputs;
+		ds.outputs = outputs;
+		bdatasets[i] = ds;
+	}
+
+	this->datasets = bdatasets;
+
 
 	datafile.close();
 }

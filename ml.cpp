@@ -39,6 +39,17 @@ char* strepr(__float128 afloat)
 	return buffer;
 }
 
+std::ostream& operator<< (std::ostream& stream, ml::Vector &v)
+{
+	stream << "[";
+	for (int i = 0; i < (v.size - 1); ++i)
+	{
+		stream << v.list[i] << ", ";
+	}
+	stream << v.list[v.size - 1] << "]";
+	return stream;
+}
+
 NeuralNetwork::NeuralNetwork(int nlayers)
 {
 	this->layers = new Layer[nlayers];
@@ -251,6 +262,10 @@ void NeuralNetwork::save()
 	save("Jarvis");
 }
 
+ml::Vector::Vector()
+{
+}
+
 ml::Vector::Vector(int size)
 {
 	this->list = new __float128[size];
@@ -295,10 +310,25 @@ void ml::Vector::print()
 	std::cout << this->list[this->size - 1] << "]\n";
 }
 
-__float128 operator * (Cell cell, ml::Vector v)
+__float128 ml::Vector::getMagnitude()
+{
+	static __float128 mag = 0.0q;
+
+	for (int i = 0; i < this->size; ++i)
+	{
+		mag += powq(this->list[i], 2.0q);
+	}
+
+	mag = powq(mag, 0.5q);
+
+	return mag;
+}
+
+
+__float128 operator * (Cell &cell, ml::Vector &v)
 {
 
-	__float128 output = 0.0q;
+	static __float128 output = 0.0q;
 	for (int i = 0; i < cell.nweights; ++i)
 	{
 		output += (v.list[i] * cell.weights[i]);
@@ -307,9 +337,47 @@ __float128 operator * (Cell cell, ml::Vector v)
 	return output;
 }
 
-__float128 operator * (ml::Vector v, Cell cell)
+__float128 operator * (ml::Vector &v, Cell &cell)
 {
 	return (cell * v);
+}
+
+
+ml::Vector operator + (ml::Vector &v1, ml::Vector &v2)
+{
+	static ml::Vector sum;
+	if (v1.size != v2.size) return sum;
+
+	sum = *(new ml::Vector(v1.size));
+	for (int i = 0; i < v1.size; ++i)
+	{
+		sum.list[i] = v1.list[i] + v2.list[i];
+	}
+
+	return sum;
+}
+ml::Vector operator * (__float128 &fscalar, ml::Vector &v1)
+{
+	static ml::Vector prod;
+	
+
+	prod = *(new ml::Vector(v1.size));
+	for (int i = 0; i < v1.size; ++i)
+	{
+		prod.list[i] = v1.list[i] * fscalar;
+	}
+
+	return prod;
+}
+ml::Vector operator * (ml::Vector &v2 ,__float128 &fscalar)
+{
+	return (fscalar * v2);
+}
+ml::Vector operator - (ml::Vector &v1, ml::Vector &v2)
+{
+	__float128 minusone = -1.0q;
+	ml::Vector negv2 = v2 * minusone;
+	return (v1 + negv2);
 }
 
 
@@ -317,7 +385,7 @@ __float128 operator * (ml::Vector v, Cell cell)
 
 
 
-ml::Vector operator * (ml::Vector v, Layer layer)
+ml::Vector operator * (ml::Vector &v, Layer &layer)
 {
 	//checks if all cells have nweights the same as the number of values in the vector.
 	for (int i = 0; i < layer.ncells; ++i)
@@ -325,7 +393,7 @@ ml::Vector operator * (ml::Vector v, Layer layer)
 		if (layer.layer[i].nweights != v.size) return 0;
 	}
 
-	ml::Vector output = *(new ml::Vector(layer.ncells));
+	static ml::Vector output = *(new ml::Vector(layer.ncells));
 	for (int i = 0; i < output.size; ++i)
 	{
 		output.list[i] = (v * layer.layer[i]);
@@ -333,13 +401,13 @@ ml::Vector operator * (ml::Vector v, Layer layer)
 	return output;
 }
 
-ml::Vector operator * (Layer layer, ml::Vector v)
+ml::Vector operator * (Layer &layer, ml::Vector &v)
 {
 	return (v * layer);
 }
 
 
-ml::Vector operator * (ml::Vector v, NeuralNetwork nn)
+ml::Vector operator * (ml::Vector &v, NeuralNetwork &nn)
 {
 	ml::Vector output = v;
 	//ml::Vector buffer = v;
@@ -350,7 +418,7 @@ ml::Vector operator * (ml::Vector v, NeuralNetwork nn)
 	return output;
 }
 
-ml::Vector operator * (NeuralNetwork nn, ml::Vector v)
+ml::Vector operator * (NeuralNetwork &nn, ml::Vector &v)
 {
 	return (v * nn);
 }
@@ -388,6 +456,7 @@ Trainer::Trainer(NeuralNetwork &nn, const char* filename, int ndatasets)
 	this->nn = nn;
 	this->ninps = this->nn.layers[0].ncells;
 	this->nouts = this->nn.layers[this->nn.nlayers].ncells;
+	this->ndatasets = ndatasets;
 
 	std::fstream datafile;
 	datafile.open(filename, std::ios::in);
@@ -395,36 +464,15 @@ Trainer::Trainer(NeuralNetwork &nn, const char* filename, int ndatasets)
 
 	dataset *bdatasets = new dataset[ndatasets];
 
-	std::cout << this->ninps << " " << this->nouts << std::endl;
-
-	/*datafile >> buff;
-
-	__float128 bfloat = strtoflt128 (buff.c_str(), NULL);
-
-	std::cout << buff << std::endl;
-	std::cout << bfloat << std::endl;*/
-
-	//dataset ds ;
-	//static __float128 bruh[20];
-
-	/*for(int i = 0; i < ndatasets; i++)
-	{
-		datafile >> buff;
-		bruh[i] = strtoflt128(buff.c_str(), NULL);
-		//bruh[i] = bfloat;
-		if (i == 0) std::cout << buff << std::endl;
-	}
-	ds.inputs = bruh;
-	this->testd = ds;*/
-
 
 	for (int i = 0; i < ndatasets; i++)
 	{
 
 		dataset ds;
-		//static __float128 inputs[nn.layers[0].ncells], outputs[nn.layers[nn.nlayers].ncells];
+		
 		__float128* inputs = new __float128[nn.layers[0].ncells];
 		__float128* outputs = new __float128[nn.layers[nn.nlayers].ncells];
+
 		for (int j = 0; j < this->ninps; j++)
 		{
 			datafile >> buff;
@@ -444,4 +492,50 @@ Trainer::Trainer(NeuralNetwork &nn, const char* filename, int ndatasets)
 
 
 	datafile.close();
+}
+
+void Trainer::partition(float ratio)
+{
+
+
+	int ntraining = (int) (ratio * this->ndatasets);
+	int ntesting = this->ndatasets - ntraining;
+
+	this->ntraining = ntraining;
+	this->ntesting = ntesting;
+
+	this->trainingdatasets = this->datasets;
+	this->testingdatasets = (this->datasets + ntraining);
+
+}
+void Trainer::partition()
+{
+	partition(0.5);
+}
+
+
+
+__float128 Trainer::calculatecost()
+{
+	static __float128 cost = 0.0q;
+	ml::Vector buffoutput, buffinput, idealoutput;
+
+	int inputsize = this->ninps;
+	int outputsize = this->nouts;
+
+	for (int i = 0; i < this->ntraining; ++i)
+	{
+		buffinput = ml::Vector(inputsize, this->trainingdatasets[i].inputs);
+		idealoutput = ml::Vector(outputsize, this->trainingdatasets[i].outputs);
+
+		buffoutput = this->nn * buffinput;
+
+		std::cout << buffinput << std::endl;
+
+		cost  = cost + (buffoutput - idealoutput).getMagnitude();
+
+	}
+
+
+	return cost;
 }

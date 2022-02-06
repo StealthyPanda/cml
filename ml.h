@@ -92,18 +92,27 @@ public:
 class Trainer
 {
 public:
-	//dataset testd;
+
 	dataset *datasets;
-	int ninps, nouts;
+	int ninps, nouts, ndatasets, ntraining, ntesting;
 	NeuralNetwork nn;
+
+	//ratio is basically ratio of training to testing datasets; default is 1/2;
+	//note: MUST manually call partition;
+	void partition();
+	void partition(float ratio);
+
 	Trainer();
 	Trainer(NeuralNetwork &nn, const char* datafilename, int ndatasets);
+	
 
-	__float128** trainingdatasets;
-	__float128** traininglabels;
+	dataset* trainingdatasets;
+	dataset* testingdatasets;
 
-	__float128** testingdatasets;
-	__float128** testinglabels;
+
+	__float128 calculatecost();
+
+
 };
 
 
@@ -114,21 +123,31 @@ namespace ml
 	public:
 		__float128* list;
 		int size;
+
+		Vector();
 		Vector(int size);
 		Vector(int size, __float128 initval);
 		Vector(int size, __float128* initvals);
 
 		void print();
+
+		__float128 getMagnitude();
 	};
 }
 
 NeuralNetwork& operator << (NeuralNetwork &nn, Layer &layer);
+std::ostream& operator<< (std::ostream& stream, ml::Vector &v);
 
-__float128 operator * (Cell cell, ml::Vector v);
-__float128 operator * (ml::Vector v, Cell cell);
+__float128 operator * (Cell &cell, ml::Vector &v);
+__float128 operator * (ml::Vector &v, Cell &cell);
 
-ml::Vector operator * (Layer layer, ml::Vector v);
-ml::Vector operator * (ml::Vector v, Layer layer);
+ml::Vector operator * (Layer &layer, ml::Vector &v);
+ml::Vector operator * (ml::Vector &v, Layer &layer);
 
-ml::Vector operator * (NeuralNetwork nn, ml::Vector v);
-ml::Vector operator * (ml::Vector v, NeuralNetwork nn);
+ml::Vector operator * (NeuralNetwork &nn, ml::Vector &v);
+ml::Vector operator * (ml::Vector &v, NeuralNetwork &nn);
+
+ml::Vector operator + (ml::Vector &v1, ml::Vector &v2);
+ml::Vector operator * (__float128 &fscalar, ml::Vector &v2);
+ml::Vector operator * (ml::Vector &v2 ,__float128 &fscalar);
+ml::Vector operator - (ml::Vector &v1, ml::Vector &v2);

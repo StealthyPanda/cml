@@ -67,7 +67,7 @@ class DenseLayer : public Layer
 public:
 	//int noutputs;
 	DenseLayer();
-	DenseLayer(int numberofcells);
+	//DenseLayer(int numberofcells);
 	DenseLayer(int numberofcells, int prevoutputn);
 };
 
@@ -144,8 +144,8 @@ __float128 operator * (ml::Vector &v, Cell &cell);
 ml::Vector operator * (Layer &layer, ml::Vector &v);
 ml::Vector operator * (ml::Vector &v, Layer &layer);
 
-ml::Vector operator * (NeuralNetwork &nn, ml::Vector &v);
-ml::Vector operator * (ml::Vector &v, NeuralNetwork &nn);
+ml::Vector operator * (const NeuralNetwork &nn, const ml::Vector &v);
+ml::Vector operator * (const ml::Vector &v, const NeuralNetwork &nn);
 
 ml::Vector operator + (ml::Vector &v1, ml::Vector &v2);
 ml::Vector operator * (__float128 &fscalar, ml::Vector &v2);

@@ -213,7 +213,7 @@ DenseLayer::DenseLayer(int numberofcells, int prevsize)
 	this->ncells = numberofcells;
 }
 
-DenseLayer::DenseLayer(int numberofcells)
+/*DenseLayer::DenseLayer(int numberofcells)
 {
 	Cell *buff = new Cell[numberofcells];
 	for (int i = 0; i < numberofcells; ++i)
@@ -222,7 +222,7 @@ DenseLayer::DenseLayer(int numberofcells)
 	}
 	this->layer = buff;
 	this->ncells = numberofcells;
-}
+}*/
 
 void NeuralNetwork::save(const char* rawname)
 {
@@ -328,7 +328,7 @@ __float128 ml::Vector::getMagnitude()
 __float128 operator * (Cell &cell, ml::Vector &v)
 {
 
-	static __float128 output = 0.0q;
+	__float128 output = 0.0q;
 	for (int i = 0; i < cell.nweights; ++i)
 	{
 		output += (v.list[i] * cell.weights[i]);
@@ -390,10 +390,10 @@ ml::Vector operator * (ml::Vector &v, Layer &layer)
 	//checks if all cells have nweights the same as the number of values in the vector.
 	for (int i = 0; i < layer.ncells; ++i)
 	{
-		if (layer.layer[i].nweights != v.size) return 0;
+		if (layer.layer[i].nweights != v.size) { std::cout << i << " Why tf am i being called" << std::endl << "layer.layer[i].nweights: " << layer.layer[i].nweights << " vsize: " << v.size; return 0; }
 	}
 
-	static ml::Vector output = *(new ml::Vector(layer.ncells));
+	ml::Vector output = *(new ml::Vector(layer.ncells));
 	for (int i = 0; i < output.size; ++i)
 	{
 		output.list[i] = (v * layer.layer[i]);
@@ -407,7 +407,7 @@ ml::Vector operator * (Layer &layer, ml::Vector &v)
 }
 
 
-ml::Vector operator * (ml::Vector &v, NeuralNetwork &nn)
+ml::Vector operator * (const ml::Vector &v, const NeuralNetwork &nn)
 {
 	ml::Vector output = v;
 	//ml::Vector buffer = v;
@@ -418,7 +418,7 @@ ml::Vector operator * (ml::Vector &v, NeuralNetwork &nn)
 	return output;
 }
 
-ml::Vector operator * (NeuralNetwork &nn, ml::Vector &v)
+ml::Vector operator * (const NeuralNetwork &nn, const ml::Vector &v)
 {
 	return (v * nn);
 }
@@ -530,7 +530,7 @@ __float128 Trainer::calculatecost()
 
 		buffoutput = this->nn * buffinput;
 
-		std::cout << buffinput << std::endl;
+		std::cout << buffoutput << " " << idealoutput << std::endl;
 
 		cost  = cost + (buffoutput - idealoutput).getMagnitude();
 

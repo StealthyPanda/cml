@@ -61,29 +61,26 @@ using namespace ml;
 int main()
 {
 
-	NeuralNetwork  jarvis = NeuralNetwork(3);
+	NeuralNetwork jarvis = NeuralNetwork(3);
 
 	InputLayer il = InputLayer(2);
-	DenseLayer dl = DenseLayer(4);
-	DenseLayer ol = DenseLayer(2);
+	DenseLayer dl = DenseLayer(4, 2);
+	DenseLayer ol = DenseLayer(2, 4);
 
-	jarvis << il; 
-	jarvis << dl;
-	jarvis << ol;
+
+	jarvis << il << dl << ol;
+
+
+
 
 	Trainer obadiah = Trainer(jarvis, "test.td", 50);
 
 	obadiah.partition();
-	Vector bruh = Vector(2, obadiah.trainingdatasets[0].inputs);
-	Vector out = (jarvis * bruh);
-	std::cout << (bruh) << std::endl;
-	std::cout << (out) << std::endl;
+	
 
-
-	//std::cout << obadiah.calculatecost() << std::endl;
-
-
-
+	__float128 cost = obadiah.calculatecost();
+	
+	std::cout << cost << std::endl;
 
 	return 0;
 

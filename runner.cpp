@@ -60,7 +60,7 @@ using namespace std::chrono;
 }
 */
 
-int main()
+/*int main()
 {
 
 	auto start = high_resolution_clock::now();
@@ -97,10 +97,13 @@ int main()
 	{
 		__float128 cost = obadiah.calculatecost();
 		if (i == 9999) std::cout << cost << std::endl;
-	}*/
+	}
 	__float128 cost = obadiah.calculatecost();
 	
 	std::cout << cost << std::endl;
+
+
+	std::cout << "Size of obadiah: " << sizeof obadiah << ", jarvis: " << sizeof (NeuralNetwork) << ", __float128: " << sizeof(__float128) << ", cost: " << sizeof(cost) << ", il: " << sizeof(il) << std::endl;
 
 	
 
@@ -112,4 +115,28 @@ int main()
 	auto duration = duration_cast<microseconds>(stop - start);
 	std::cout << "Time taken: " << duration.count() << "micros or " << (duration.count()/1000000.) << "s" << std::endl;
 	return 0;	
+}*/
+
+int main()
+{
+	NeuralNetwork n1(3), n2(3);
+
+	InputLayer il1(2), il2(2);
+	DenseLayer dl1(4, 2), dl2(4, 2);
+	DenseLayer ol1(2, 4), ol2(2, 4);
+
+	n1 << il1 << dl1 << ol1;
+	n2 << il2 << dl2 << ol2;
+
+	std::cout << "N1: " << std::endl;
+	n1.print();
+
+	std::cout << std::endl << "N2: " << std::endl;
+	n2.print();
+
+	NeuralNetwork n3 = (n1 + n2);
+	std::cout << std::endl << "N3: " << std::endl;
+	n3.print();
+
+	return 0;
 }

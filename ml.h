@@ -133,6 +133,9 @@ namespace ml
 		void print();
 
 		__float128 getMagnitude();
+
+
+		__float128 operator [] (int n);
 	};
 }
 
@@ -152,3 +155,5 @@ ml::Vector operator + (ml::Vector &v1, ml::Vector &v2);
 ml::Vector operator * (__float128 &fscalar, ml::Vector &v2);
 ml::Vector operator * (ml::Vector &v2 ,__float128 &fscalar);
 ml::Vector operator - (ml::Vector &v1, ml::Vector &v2);
+
+NeuralNetwork operator + (NeuralNetwork& nn1, NeuralNetwork& nn2);

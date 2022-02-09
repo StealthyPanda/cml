@@ -111,6 +111,7 @@ public:
 
 
 	__float128 calculatecost();
+	__float128 calculatecost(dataset* datasetgroup);
 
 
 };

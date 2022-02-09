@@ -455,7 +455,7 @@ Trainer::Trainer(NeuralNetwork &nn, const char* filename, int ndatasets)
 {
 	this->nn = nn;
 	this->ninps = this->nn.layers[0].ncells;
-	this->nouts = this->nn.layers[this->nn.nlayers].ncells;
+	this->nouts = this->nn.layers[this->nn.nlayers-1].ncells;
 	this->ndatasets = ndatasets;
 
 	std::fstream datafile;
@@ -471,7 +471,7 @@ Trainer::Trainer(NeuralNetwork &nn, const char* filename, int ndatasets)
 		dataset ds;
 		
 		__float128* inputs = new __float128[nn.layers[0].ncells];
-		__float128* outputs = new __float128[nn.layers[nn.nlayers].ncells];
+		__float128* outputs = new __float128[nn.layers[nn.nlayers-1].ncells];
 
 		for (int j = 0; j < this->ninps; j++)
 		{
@@ -514,8 +514,32 @@ void Trainer::partition()
 }
 
 
+__float128 Trainer::calculatecost(dataset* datasetgroup)
+{
+	__float128 cost = 0.0q;
+	ml::Vector buffoutput, buffinput, idealoutput;
 
-__float128 Trainer::calculatecost()
+	int inputsize = this->ninps;
+	int outputsize = this->nouts;
+
+	for (int i = 0; i < this->ntraining; ++i)
+	{
+		buffinput = ml::Vector(inputsize, datasetgroup[i].inputs);
+		idealoutput = ml::Vector(outputsize, datasetgroup[i].outputs);
+
+		buffoutput = this->nn * buffinput;
+
+		
+		cost  = cost + (buffoutput - idealoutput).getMagnitude();
+
+	}
+
+
+	return cost;
+}
+
+
+/*__float128 Trainer::calculatecost()
 {
 	static __float128 cost = 0.0q;
 	ml::Vector buffoutput, buffinput, idealoutput;
@@ -530,7 +554,6 @@ __float128 Trainer::calculatecost()
 
 		buffoutput = this->nn * buffinput;
 
-		std::cout << buffoutput << " " << idealoutput << std::endl;
 
 		cost  = cost + (buffoutput - idealoutput).getMagnitude();
 
@@ -538,4 +561,8 @@ __float128 Trainer::calculatecost()
 
 
 	return cost;
+}*/
+__float128 Trainer::calculatecost()
+{
+	return calculatecost(this->trainingdatasets);
 }

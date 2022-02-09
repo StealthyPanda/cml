@@ -1,7 +1,9 @@
 #include <iostream>
+#include <chrono>
 #include "ml.h"
 
 using namespace ml;
+using namespace std::chrono;
 
 //g++ runner.cpp ml.cpp -o builds/runner -std=gnu++11 -lquadmath
 /*int main()
@@ -61,6 +63,10 @@ using namespace ml;
 int main()
 {
 
+	auto start = high_resolution_clock::now();
+
+
+
 	NeuralNetwork jarvis = NeuralNetwork(3);
 
 	InputLayer il = InputLayer(2);
@@ -77,11 +83,33 @@ int main()
 
 	obadiah.partition();
 	
+	/*Vector bruhbruh = Vector(2, obadiah.trainingdatasets[0].outputs);
 
+	std::cout << bruhbruh << std::endl;
+
+	Vector bruhbruh2 = Vector(2, obadiah.trainingdatasets[1].outputs);
+
+	std::cout << bruhbruh2 << std::endl;*/
+
+	
+
+	/*for (int i = 0; i < 10000; ++i)
+	{
+		__float128 cost = obadiah.calculatecost();
+		if (i == 9999) std::cout << cost << std::endl;
+	}*/
 	__float128 cost = obadiah.calculatecost();
 	
 	std::cout << cost << std::endl;
 
-	return 0;
+	
 
+
+
+
+
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	std::cout << "Time taken: " << duration.count() << "micros or " << (duration.count()/1000000.) << "s" << std::endl;
+	return 0;	
 }

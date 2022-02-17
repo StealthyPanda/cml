@@ -105,6 +105,37 @@ public:
 };
 
 
+
+namespace ml
+{
+	class Vector
+	{
+	public:
+		__float128* list;
+		int size;
+
+		Vector();
+		Vector(int size);
+		Vector(int size, __float128 initval);
+		Vector(int size, __float128* initvals);
+
+		void print();
+
+		__float128 getMagnitude();
+
+
+		__float128& operator [] (int n);
+	};
+}
+
+
+class OutputCache
+{
+public:
+	ml::Vector* outputs;
+	ml::Vector& operator[](int index);
+};
+
 class Trainer
 {
 public:
@@ -129,31 +160,14 @@ public:
 	__float128 calculatecost();
 	__float128 calculatecost(dataset* datasetgroup);
 
+	NeuralNetwork getgradient();
+	//NeuralNetwork getgradient(dataset* datasetgroup);
+
 
 };
 
 
-namespace ml
-{
-	class Vector
-	{
-	public:
-		__float128* list;
-		int size;
 
-		Vector();
-		Vector(int size);
-		Vector(int size, __float128 initval);
-		Vector(int size, __float128* initvals);
-
-		void print();
-
-		__float128 getMagnitude();
-
-
-		__float128& operator [] (int n);
-	};
-}
 
 
 #define LEAK 0.1q
@@ -198,3 +212,6 @@ ml::Vector operator * (ml::Vector &v2 ,__float128 &fscalar);
 ml::Vector operator - (ml::Vector &v1, ml::Vector &v2);
 
 NeuralNetwork operator + (NeuralNetwork& nn1, NeuralNetwork& nn2);
+NeuralNetwork operator - (NeuralNetwork& nn1, NeuralNetwork& nn2);
+NeuralNetwork operator * (const NeuralNetwork& nn, const __float128& scalar);
+NeuralNetwork operator * (const __float128& scalar, const NeuralNetwork& nn);

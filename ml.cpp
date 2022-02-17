@@ -490,6 +490,54 @@ NeuralNetwork operator + (NeuralNetwork& nn1, NeuralNetwork& nn2)
 	return nnbuff;
 }
 
+NeuralNetwork operator - (NeuralNetwork& nn1, NeuralNetwork& nn2)
+{
+	if (nn1.nlayers != nn2.nlayers)
+	{
+		std::cout << "Mr.Stark i dont feel so good" ;
+		NeuralNetwork empty = *(new NeuralNetwork());
+		return empty;
+	}
+
+	NeuralNetwork nnbuff = *(new NeuralNetwork(nn1.nlayers));
+
+	int buffncells, buffnweights;
+
+	for (int i = 0; i < nn1.nlayers; ++i)
+	{
+		Layer bufflayer;
+		//bufflayer = *(new Layer());
+
+		//std::cout << "called" << std::endl;
+
+		buffncells = nn1.layers[i].ncells;
+
+		Cell *buffcelllist = new Cell[buffncells];
+		buffnweights = nn1.layers[i].layer[0].nweights;
+
+		for (int j = 0; j < buffncells; ++j)
+		{
+			Cell buffcell = *(new Cell(buffnweights));
+
+			for (int k = 0; k < buffnweights; ++k)
+			{
+				buffcell.weights[k] = (nn1.layers[i].layer[j].weights[k] - nn2.layers[i].layer[j].weights[k]);
+			}
+
+			buffcell.bias = nn1.layers[i].layer[j].bias - nn2.layers[i].layer[j].bias;
+			buffcelllist[j] = buffcell;
+		}
+
+		bufflayer = *(new Layer(buffcelllist, buffncells));
+
+		nnbuff << bufflayer;
+
+		//nnbuff.print();
+	}
+
+	return nnbuff;
+}
+
 
 
 Trainer::Trainer()
@@ -697,4 +745,70 @@ void Cell::setactfunc( __float128 (*actfunc)(const __float128& val) )
 __float128 Trainer::calculatecost()
 {
 	return calculatecost(this->trainingdatasets);
+}
+
+NeuralNetwork operator * (const NeuralNetwork& nn, const __float128& scalar)
+{
+
+	NeuralNetwork nnbuff = *(new NeuralNetwork(nn.nlayers));
+
+	int buffncells, buffnweights;
+
+	for (int i = 0; i < nn.nlayers; ++i)
+	{
+		Layer bufflayer;
+		//bufflayer = *(new Layer());
+
+		//std::cout << "called" << std::endl;
+
+		buffncells = nn.layers[i].ncells;
+
+		Cell *buffcelllist = new Cell[buffncells];
+		buffnweights = nn.layers[i].layer[0].nweights;
+
+		for (int j = 0; j < buffncells; ++j)
+		{
+			Cell buffcell = *(new Cell(buffnweights));
+
+			for (int k = 0; k < buffnweights; ++k)
+			{
+				buffcell.weights[k] = (nn.layers[i].layer[j].weights[k] * scalar);
+			}
+
+			buffcell.bias = nn.layers[i].layer[j].bias * scalar;
+			buffcelllist[j] = buffcell;
+		}
+
+		bufflayer = *(new Layer(buffcelllist, buffncells));
+
+		nnbuff << bufflayer;
+
+		//nnbuff.print();
+	}
+
+	return nnbuff;
+}
+
+NeuralNetwork operator * (const __float128& scalar, const NeuralNetwork& nn)
+{
+	return (nn * scalar);
+}
+
+
+ml::Vector& OutputCache::operator[](int index)
+{
+	return this->outputs[index];
+}
+
+
+NeuralNetwork Trainer::getgradient()
+{
+	/*OutputCache oc;
+	ml::Vector *oclist = new ml::Vector[this->nn.nlayers];
+
+	for (int i = 0; i < this->nn.nlayers; ++i)
+	{
+		oclist[i] = 
+	}*/
+
 }

@@ -71,17 +71,19 @@ int main()
 	NeuralNetwork jarvis = NeuralNetwork(3);
 
 	InputLayer il = InputLayer(2);
-	DenseLayer dl1 = DenseLayer(2000, 2);
+	DenseLayer dl1 = DenseLayer(4, 2);
 	//DenseLayer dl2 = DenseLayer(2000, 2000);
-	DenseLayer ol = DenseLayer(2, 2000);
+	DenseLayer ol = DenseLayer(2, 4);
 
 
 	jarvis << il << dl1 << ol;
 
-	//jarvis[1][0][0] = -69.4201q;
-
+	
+	
 
 	Trainer obadiah = Trainer(jarvis, "test2.td", 400);
+
+	
 
 	obadiah.partition();
 	
@@ -106,10 +108,10 @@ int main()
 	__float128 cost = obadiah.calculatecost();
 	std::cout << "Cost of jarvis: " << cost << std::endl;
 
-	std::cout << expq(1) << std::endl;
-	std::cout << actsigmoid(-0.93) << std::endl;
-	std::cout << actrelu(26) << std::endl;
-	std::cout << actleakyrelu(-0.1) << std::endl;
+	//std::cout << expq(1) << std::endl;
+	//std::cout << actsigmoid(-0.93) << std::endl;
+	//std::cout << actrelu(26) << std::endl;
+	//std::cout << actleakyrelu(-0.1) << std::endl;
 
 
 

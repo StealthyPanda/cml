@@ -1,5 +1,7 @@
 #include <ostream>
 
+#define ACTFUNC acttanh
+
 void print(const __float128& afloat);
 
 std::ostream& operator<< (std::ostream& stream, __float128 afloat);
@@ -144,6 +146,23 @@ namespace ml
 		__float128& operator [] (int n);
 	};
 }
+
+
+#define LEAK 0.1q
+#define ALPHA 0.1q
+
+__float128 acttaninv(const __float128& val);
+__float128 acttanh(const __float128& val);
+__float128 actsigmoid(const __float128& val);
+__float128 actrelu(const __float128& val);
+__float128 actleakyrelu(const __float128& val);
+__float128 actelu(const __float128& val);
+__float128 actswish(const __float128& val);
+
+//todo: implement softmax activation function from this website: https://www.v7labs.com/blog/neural-networks-activation-functions
+
+
+
 
 NeuralNetwork& operator << (NeuralNetwork &nn, Layer &layer);
 std::ostream& operator<< (std::ostream& stream, ml::Vector &v);

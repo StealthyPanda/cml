@@ -2,6 +2,8 @@
 #include <chrono>
 #include "ml.h"
 
+#include <quadmath.h>
+
 using namespace ml;
 using namespace std::chrono;
 
@@ -60,37 +62,30 @@ using namespace std::chrono;
 }
 */
 
-/*int main()
+int main()
 {
 
 	auto start = high_resolution_clock::now();
 
 
 
-	NeuralNetwork jarvis = NeuralNetwork(3);
+	NeuralNetwork jarvis = NeuralNetwork(4);
 
 	InputLayer il = InputLayer(2);
-	DenseLayer dl = DenseLayer(4, 2);
-	DenseLayer ol = DenseLayer(2, 4);
+	DenseLayer dl1 = DenseLayer(2000, 2);
+	DenseLayer dl2 = DenseLayer(2000, 2000);
+	DenseLayer ol = DenseLayer(2, 2000);
 
 
-	jarvis << il << dl << ol;
+	jarvis << il << dl1 << dl2 << ol;
+
+	//jarvis[1][0][0] = -69.4201q;
 
 
-
-
-	Trainer obadiah = Trainer(jarvis, "test.td", 50);
+	Trainer obadiah = Trainer(jarvis, "test2.td", 400);
 
 	obadiah.partition();
 	
-	/*Vector bruhbruh = Vector(2, obadiah.trainingdatasets[0].outputs);
-
-	std::cout << bruhbruh << std::endl;
-
-	Vector bruhbruh2 = Vector(2, obadiah.trainingdatasets[1].outputs);
-
-	std::cout << bruhbruh2 << std::endl;*/
-
 	
 
 	/*for (int i = 0; i < 10000; ++i)
@@ -107,17 +102,25 @@ using namespace std::chrono;
 
 	
 
+*/
 
+	__float128 cost = obadiah.calculatecost();
+	std::cout << "Cost of jarvis: " << cost << std::endl;
+
+	std::cout << expq(1) << std::endl;
+	std::cout << actsigmoid(-0.93) << std::endl;
+	std::cout << actrelu(26) << std::endl;
+	std::cout << actleakyrelu(-0.1) << std::endl;
 
 
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
-	std::cout << "Time taken: " << duration.count() << "micros or " << (duration.count()/1000000.) << "s" << std::endl;
+	std::cout << std::endl << "Time taken: " << duration.count() << "micros or " << (duration.count()/1000000.) << "s" << std::endl;
 	return 0;	
-}*/
+}
 
-int main()
+/*int main()
 {
 	NeuralNetwork n1(3), n2(3);
 
@@ -148,4 +151,4 @@ int main()
 	n3.print();
 
 	return 0;
-}
+}*/

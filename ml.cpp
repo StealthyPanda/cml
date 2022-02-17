@@ -334,6 +334,7 @@ __float128 operator * (Cell &cell, ml::Vector &v)
 		output += (v.list[i] * cell.weights[i]);
 	}
 	output += cell.bias;
+	output = ACTFUNC(output);
 	return output;
 }
 
@@ -603,6 +604,53 @@ __float128 Trainer::calculatecost(dataset* datasetgroup)
 
 
 	return cost;
+}
+
+
+__float128 acttaninv(const __float128& val)
+{
+	return atanq(val);
+}
+
+__float128 acttanh(const __float128& val)
+{
+	return tanhq(val);
+}
+
+
+__float128 actsigmoid(const __float128& val)
+{
+	__float128 sigval = *(new __float128());
+	sigval = (1.0q/(1.0q + expq(-1.0q * val)));
+	return sigval;
+}
+
+__float128 actrelu(const __float128& val)
+{
+	__float128 sigval = 0.0q;
+	if (val > 0.0q) sigval = val;
+	return sigval;
+}
+
+__float128 actleakyrelu(const __float128& val)
+{
+	__float128 sigval = (LEAK * val);
+	if (val > sigval) sigval = val;
+	return sigval;
+}
+
+__float128 actelu(const __float128& val)
+{
+	__float128 sigval = *(new __float128());
+	sigval = (ALPHA * (expq(val) - 1));
+	return sigval;
+}
+
+__float128 actswish(const __float128& val)
+{
+	__float128 sigval = *(new __float128());
+	sigval = (val/(1.0q + expq(-1.0q * val)));
+	return sigval;
 }
 
 

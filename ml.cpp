@@ -380,9 +380,24 @@ ml::Vector operator - (ml::Vector &v1, ml::Vector &v2)
 	return (v1 + negv2);
 }
 
-__float128 ml::Vector::operator [] (int n)
+__float128& ml::Vector::operator [] (int n)
 {
 	return this->list[n];
+}
+
+__float128& Cell::operator [] (int n)
+{
+	return this->weights[n];
+}
+
+Cell& Layer::operator [] (int n)
+{
+	return this->layer[n];
+}
+
+Layer& NeuralNetwork::operator [] (int n)
+{
+	return this->layers[n];
 }
 
 
@@ -431,36 +446,36 @@ NeuralNetwork operator + (NeuralNetwork& nn1, NeuralNetwork& nn2)
 	if (nn1.nlayers != nn2.nlayers)
 	{
 		std::cout << "Mr.Stark i dont feel so good" ;
-		return NeuralNetwork();
+		NeuralNetwork empty = *(new NeuralNetwork());
+		return empty;
 	}
 
 	NeuralNetwork nnbuff = *(new NeuralNetwork(nn1.nlayers));
 
-	Layer bufflayer;
 	int buffncells, buffnweights;
 
 	for (int i = 0; i < nn1.nlayers; ++i)
 	{
+		Layer bufflayer;
 		//bufflayer = *(new Layer());
 
-		std::cout << "called" << std::endl;
+		//std::cout << "called" << std::endl;
 
 		buffncells = nn1.layers[i].ncells;
 
-		Cell buffcelllist[buffncells];
-		Cell buffcell;
+		Cell *buffcelllist = new Cell[buffncells];
+		buffnweights = nn1.layers[i].layer[0].nweights;
 
 		for (int j = 0; j < buffncells; ++j)
 		{
-			buffnweights = nn1.layers[i].layer[j].nweights;
-			buffcell = *(new Cell(buffnweights));
+			Cell buffcell = *(new Cell(buffnweights));
 
 			for (int k = 0; k < buffnweights; ++k)
 			{
 				buffcell.weights[k] = (nn1.layers[i].layer[j].weights[k] + nn2.layers[i].layer[j].weights[k]);
 			}
 
-			buffcell.bias = nn1.layers[i].layer[j].bias + nn1.layers[i].layer[j].bias;
+			buffcell.bias = nn1.layers[i].layer[j].bias + nn2.layers[i].layer[j].bias;
 			buffcelllist[j] = buffcell;
 		}
 
@@ -468,7 +483,7 @@ NeuralNetwork operator + (NeuralNetwork& nn1, NeuralNetwork& nn2)
 
 		nnbuff << bufflayer;
 
-
+		//nnbuff.print();
 	}
 
 	return nnbuff;

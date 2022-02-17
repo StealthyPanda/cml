@@ -125,17 +125,26 @@ int main()
 	DenseLayer dl1(4, 2), dl2(4, 2);
 	DenseLayer ol1(2, 4), ol2(2, 4);
 
-	n1 << il1 << dl1 << ol1;
-	n2 << il2 << dl2 << ol2;
+	n1 << il1;
+	n1 << dl1;
+	n1 << ol1;
+	n1[1][0][0] = 69420.0q;
 
-	std::cout << "N1: " << std::endl;
+	n2 << il2;
+	n2 << dl2;
+	n2 << ol2;
+	n2[2][0].bias = -3.141592q;
+
+	std::cout << "N1: " << n1.nlayers << std::endl;
 	n1.print();
 
-	std::cout << std::endl << "N2: " << std::endl;
+	std::cout << std::endl << "N2: " << n2.nlayers << std::endl;
 	n2.print();
 
+	std::cout << std::endl << "\nN2 ends here fam\n" << std::endl;
+
 	NeuralNetwork n3 = (n1 + n2);
-	std::cout << std::endl << "N3: " << std::endl;
+	std::cout << std::endl << "N3: " << n3.nlayers <<std::endl;
 	n3.print();
 
 	return 0;

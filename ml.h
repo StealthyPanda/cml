@@ -29,6 +29,8 @@ public:
 	//if default1 is true, then all weights are initialised with 1; else 0
 	Cell(int nweights, bool default1);
 	Cell(const __float128 weights[], const int nweights, const __float128 bias);
+
+	__float128& operator[] (int index);
 };
 
 
@@ -48,6 +50,8 @@ public:
 	Layer append(Cell &cell);
 
 	void print();
+
+	Cell& operator[](int index);
 
 };
 
@@ -86,6 +90,8 @@ public:
 	void print();
 	void save();
 	void save(const char* savefilename);
+
+	Layer& operator[] (int index);
 };
 
 
@@ -135,7 +141,7 @@ namespace ml
 		__float128 getMagnitude();
 
 
-		__float128 operator [] (int n);
+		__float128& operator [] (int n);
 	};
 }
 

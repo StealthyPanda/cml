@@ -64,20 +64,19 @@ using namespace std::chrono;
 
 int main()
 {
-
 	auto start = high_resolution_clock::now();
 
 
 
-	NeuralNetwork jarvis = NeuralNetwork(4);
+	NeuralNetwork jarvis = NeuralNetwork(3);
 
 	InputLayer il = InputLayer(2);
 	DenseLayer dl1 = DenseLayer(2000, 2);
-	DenseLayer dl2 = DenseLayer(2000, 2000);
+	//DenseLayer dl2 = DenseLayer(2000, 2000);
 	DenseLayer ol = DenseLayer(2, 2000);
 
 
-	jarvis << il << dl1 << dl2 << ol;
+	jarvis << il << dl1 << ol;
 
 	//jarvis[1][0][0] = -69.4201q;
 

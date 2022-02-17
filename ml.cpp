@@ -334,7 +334,7 @@ __float128 operator * (Cell &cell, ml::Vector &v)
 		output += (v.list[i] * cell.weights[i]);
 	}
 	output += cell.bias;
-	output = ACTFUNC(output);
+	output = (cell.actfuncsetted ? cell.actfunc(output) : DEFACTFUNC(output));
 	return output;
 }
 
@@ -652,6 +652,23 @@ __float128 actswish(const __float128& val)
 	sigval = (val/(1.0q + expq(-1.0q * val)));
 	return sigval;
 }
+
+void Layer::setactfunc( __float128 (*actfunc)(const __float128& val) )
+{
+	this->actfunc = actfunc;
+	for (int i = 0; i < this->ncells; ++i)
+	{
+		this->layer[i].setactfunc(this->actfunc);
+	}
+}
+
+
+void Cell::setactfunc( __float128 (*actfunc)(const __float128& val) )
+{
+	this->actfunc = actfunc;
+	this->actfuncsetted = true;
+}
+
 
 
 /*__float128 Trainer::calculatecost()

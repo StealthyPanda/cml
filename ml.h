@@ -1,6 +1,6 @@
 #include <ostream>
 
-#define ACTFUNC ACTTANH
+#define DEFACTFUNC ACTSIGMOID
 
 void print(const __float128& afloat);
 
@@ -25,6 +25,8 @@ public:
 	__float128 bias;
 	int nweights;
 
+	bool actfuncsetted = false;
+
 	Cell();
 	//weights are initialised with 0
 	Cell(int nweights);
@@ -33,6 +35,9 @@ public:
 	Cell(const __float128 weights[], const int nweights, const __float128 bias);
 
 	__float128& operator[] (int index);
+
+	__float128 (*actfunc)(const __float128& val);
+	void setactfunc( __float128 (*actfunc)(const __float128& val) );
 };
 
 
@@ -57,6 +62,7 @@ public:
 	Cell& operator[](int index);
 
 	__float128 (*actfunc)(const __float128& val);
+	void setactfunc( __float128 (*actfunc)(const __float128& val) );
 };
 
 class InputLayer : public Layer
@@ -171,16 +177,7 @@ __float128 actswish(const __float128& val);
 
 //todo: implement softmax activation function from this website: https://www.v7labs.com/blog/neural-networks-activation-functions
 
-/*enum actfunc
-{
-	taninv = ACTTANINV;
-	tanh = ACTTANH;
-	sigmoid = ACTSIGMOID;
-	relu = ACTRELU;
-	leakyrelu = ACTLEAKYRELU;
-	elu = ACTELU;
-	swish = ACTSWISH;
-};*/
+
 
 
 NeuralNetwork& operator << (NeuralNetwork &nn, Layer &layer);

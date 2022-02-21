@@ -1,6 +1,6 @@
 #include <ostream>
 
-#define DEFACTFUNC ACTSIGMOID
+#define DEFACTFUNC ACTNONE
 
 void print(const __float128& afloat);
 
@@ -86,25 +86,6 @@ public:
 };
 
 
-class NeuralNetwork
-{
-public:
-	Layer *layers;
-	int nlayers, index;
-	NeuralNetwork();
-	NeuralNetwork(int nlayers);
-	NeuralNetwork(int nlayers, InputLayer il);
-	//todo this:
-	//NeuralNetwork(NeuralNetwork &nn);
-
-	void print();
-	void save();
-	void save(const char* savefilename);
-
-	Layer& operator[] (int index);
-};
-
-
 
 namespace ml
 {
@@ -129,12 +110,42 @@ namespace ml
 }
 
 
+
 class OutputCache
 {
 public:
 	ml::Vector* outputs;
 	ml::Vector& operator[](int index);
+
+	OutputCache(const NeuralNetwork& nn, const ml::Vector& input);
 };
+
+class NeuralNetwork
+{
+public:
+	Layer *layers;
+	int nlayers, index;
+	NeuralNetwork();
+	NeuralNetwork(int nlayers);
+	NeuralNetwork(int nlayers, InputLayer il);
+	//todo this:
+	//NeuralNetwork(NeuralNetwork &nn);
+
+	void print();
+	void save();
+	void save(const char* savefilename);
+
+	Layer& operator[] (int index);
+
+	//basically this same as (NeuralNetwork * ml::Vector), but instead of calculating the whole thing,
+	//it only does required calculations to get output, given that the outputcache oc has all the correct outputs of each layer
+	//and the nn currently only has a change in yth cell of the xth layer
+	//NOTE: these indices are in array form, so layer 1 is 0 etc
+	ml::Vector output(ml::Vector input, OutputCache oc, int xthlayer, int ythcell);
+};
+
+
+
 
 class Trainer
 {
@@ -163,6 +174,8 @@ public:
 	NeuralNetwork getgradient();
 	//NeuralNetwork getgradient(dataset* datasetgroup);
 
+	__float128 getcost();
+
 
 };
 
@@ -180,6 +193,7 @@ public:
 #define ACTLEAKYRELU actleakyrelu
 #define ACTELU actelu
 #define ACTSWISH actswish
+#define ACTNONE actnone
 
 __float128 acttaninv(const __float128& val);
 __float128 acttanh(const __float128& val);
@@ -188,6 +202,7 @@ __float128 actrelu(const __float128& val);
 __float128 actleakyrelu(const __float128& val);
 __float128 actelu(const __float128& val);
 __float128 actswish(const __float128& val);
+__float128 actnone(const __float128& val);
 
 //todo: implement softmax activation function from this website: https://www.v7labs.com/blog/neural-networks-activation-functions
 

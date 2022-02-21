@@ -62,7 +62,7 @@ using namespace std::chrono;
 }
 */
 
-int main()
+/*int main()
 {
 	auto start = high_resolution_clock::now();
 
@@ -89,21 +89,21 @@ int main()
 	
 	
 
-	/*for (int i = 0; i < 10000; ++i)
-	{
-		__float128 cost = obadiah.calculatecost();
-		if (i == 9999) std::cout << cost << std::endl;
-	}
-	__float128 cost = obadiah.calculatecost();
+	//for (int i = 0; i < 10000; ++i)
+	//{
+	//	__float128 cost = obadiah.calculatecost();
+	//	if (i == 9999) std::cout << cost << std::endl;
+	//}
+	//__float128 cost = obadiah.calculatecost();
 	
-	std::cout << cost << std::endl;
+	//std::cout << cost << std::endl;
 
 
-	std::cout << "Size of obadiah: " << sizeof obadiah << ", jarvis: " << sizeof (NeuralNetwork) << ", __float128: " << sizeof(__float128) << ", cost: " << sizeof(cost) << ", il: " << sizeof(il) << std::endl;
+	//std::cout << "Size of obadiah: " << sizeof obadiah << ", jarvis: " << sizeof (NeuralNetwork) << ", __float128: " << sizeof(__float128) << ", cost: " << sizeof(cost) << ", il: " << sizeof(il) << std::endl;
 
 	
 
-*/
+
 
 	__float128 cost = obadiah.calculatecost();
 	std::cout << "Cost of jarvis: " << cost << std::endl;
@@ -119,6 +119,39 @@ int main()
 	auto duration = duration_cast<microseconds>(stop - start);
 	std::cout << std::endl << "Time taken: " << duration.count() << "micros or " << (duration.count()/1000000.) << "s" << std::endl;
 	return 0;	
+}*/
+
+int main()
+{
+	auto start = high_resolution_clock::now();
+
+	NeuralNetwork epicbruhmoment = NeuralNetwork(3);
+	InputLayer il(2);
+	DenseLayer dl(2000, 2);
+	DenseLayer ol(2, 2000);
+
+	epicbruhmoment << il;
+	epicbruhmoment << dl;
+	epicbruhmoment << ol;
+
+	//epicbruhmoment.print();
+
+	Trainer tr(epicbruhmoment, "test2.td", 500);
+	tr.partition();
+
+	ml::Vector firstinp(2, tr.trainingdatasets[0].inputs), firstout(2, tr.trainingdatasets[0].outputs);
+	//firstinp.print();
+	//firstout.print();
+
+	ml::Vector nout = (epicbruhmoment * firstinp);
+	nout.print();
+	
+
+
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	std::cout << std::endl << "Time taken: " << duration.count() << "micros or " << (duration.count()/1000000.) << "s" << std::endl;
+	return 0;
 }
 
 /*int main()

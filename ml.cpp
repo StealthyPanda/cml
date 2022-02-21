@@ -701,6 +701,13 @@ __float128 actswish(const __float128& val)
 	return sigval;
 }
 
+__float128 actnone(const __float128& val)
+{
+	return val;
+}
+
+
+
 void Layer::setactfunc( __float128 (*actfunc)(const __float128& val) )
 {
 	this->actfunc = actfunc;
@@ -801,14 +808,33 @@ ml::Vector& OutputCache::operator[](int index)
 }
 
 
+
+ml::Vector NeuralNetwork::output(ml::Vector input, OutputCache oc, int xthlayer, int ythcell)
+{
+	ml::Vector out = *(new ml::Vector());
+
+	for (int i = 0; i < this->nlayers; ++i)
+	{
+		if (i < xthlayer)
+		{
+			out = oc[i];
+		}
+		else
+		{
+			out = (out * this->layers[i]);
+		}
+	}
+
+	return out;
+}
+
+
+
+
+
 NeuralNetwork Trainer::getgradient()
 {
-	/*OutputCache oc;
-	ml::Vector *oclist = new ml::Vector[this->nn.nlayers];
-
-	for (int i = 0; i < this->nn.nlayers; ++i)
-	{
-		oclist[i] = 
-	}*/
+	NeuralNetwork buff = NeuralNetwork();
+	return buff;
 
 }

@@ -630,7 +630,7 @@ void Trainer::partition()
 }
 
 
-__float128 Trainer::calculatecost(dataset* datasetgroup)
+__float128 Trainer::calculatecost(dataset* datasetgroup, int ndatasetgroup)
 {
 	__float128 cost = 0.0q;
 	ml::Vector buffoutput, buffinput, idealoutput;
@@ -638,7 +638,7 @@ __float128 Trainer::calculatecost(dataset* datasetgroup)
 	int inputsize = this->ninps;
 	int outputsize = this->nouts;
 
-	for (int i = 0; i < this->ntraining; ++i)
+	for (int i = 0; i < ndatasetgroup; ++i)
 	{
 		buffinput = ml::Vector(inputsize, datasetgroup[i].inputs);
 		idealoutput = ml::Vector(outputsize, datasetgroup[i].outputs);
@@ -751,7 +751,7 @@ void Cell::setactfunc( __float128 (*actfunc)(const __float128& val) )
 }*/
 __float128 Trainer::calculatecost()
 {
-	return calculatecost(this->trainingdatasets);
+	return calculatecost(this->trainingdatasets, this->ntraining);
 }
 
 NeuralNetwork operator * (const NeuralNetwork& nn, const __float128& scalar)
@@ -807,13 +807,27 @@ ml::Vector& OutputCache::operator[](int index)
 	return this->outputs[index];
 }
 
+OutputCache::OutputCache(const NeuralNetwork& nn, ml::Vector input)
+{
+	ml::Vector *outs = new ml::Vector[nn.nlayers];
+
+	outs[0] = (nn.layers[0] * input);
+
+	for (int i = 1; i < nn.nlayers; ++i)
+	{
+		outs[i] = (nn.layers[i] * outs[i - 1]);
+	}
+
+	this->outputs = outs;
+}
 
 
-ml::Vector NeuralNetwork::output(ml::Vector input, OutputCache oc, int xthlayer, int ythcell)
+
+/*ml::Vector output(const NeuralNetwork& nn, const ml::Vector& input, OutputCache oc, int xthlayer, int ythcell)
 {
 	ml::Vector out = *(new ml::Vector());
 
-	for (int i = 0; i < this->nlayers; ++i)
+	for (int i = 0; i < nn.nlayers; ++i)
 	{
 		if (i < xthlayer)
 		{
@@ -821,11 +835,79 @@ ml::Vector NeuralNetwork::output(ml::Vector input, OutputCache oc, int xthlayer,
 		}
 		else
 		{
-			out = (out * this->layers[i]);
+			out = (out * nn.layers[i]);
 		}
 	}
 
 	return out;
+}*/
+
+ml::Vector output(const NeuralNetwork& nn, ml::Vector& input, OutputCache oc, int xthlayer, int ythcell)
+{
+	ml::Vector out = *(new ml::Vector());
+
+	out = nn.layers[0] * input;
+
+	for (int i = 0; i < nn.nlayers; ++i)
+	{
+		if (i < xthlayer)
+		{
+			out = oc[i];
+		}
+		else if (i == xthlayer)
+		{
+			__float128 *abuffer = new __float128[nn.layers[i].ncells];
+			for (int j = 0; j < nn.layers[i].ncells; ++j)
+			{
+				if (j != ythcell) abuffer[j] = oc[i][j];
+				else
+				{
+					abuffer[j] = (out * nn.layers[i].layer[j]);
+				}
+			}
+			out = *(new ml::Vector(nn.layers[i].ncells, abuffer));
+		}
+		else
+		{
+			out = (out * nn.layers[i]);
+		}
+	}
+
+	return out;
+}
+
+__float128 Trainer::getcost(const NeuralNetwork& cnn, int ninputs, int noutputs, dataset *datasetgroup, int ndatasetgroup, OutputCache *ocs, int xthlayer, int ythcell)
+{
+	__float128 cost = *(new __float128());
+	cost = 0.0q;
+	for (int i = 0; i < ndatasetgroup; ++i)
+	{
+		ml::Vector bufferinput(ninputs, datasetgroup[i].inputs);
+		ml::Vector idealoutput(noutputs, datasetgroup[i].outputs);
+		ml::Vector bufferoutput = output(cnn, bufferinput, ocs[i], xthlayer, ythcell);
+		cost = cost + (bufferoutput - idealoutput).getMagnitude();
+	}
+
+	return cost;
+}
+
+
+
+OutputCache::OutputCache()
+{
+}
+
+OutputCache* OutputCache::getoutputcaches(const NeuralNetwork& nn, dataset* datasets, int ndatasets, int ninps)
+{
+	OutputCache *ocs = new OutputCache[ndatasets];
+
+	for (int i = 0; i < ndatasets; ++i)
+	{
+		ml::Vector buffer(ninps, datasets[i].inputs);
+		ocs[i] = *(new OutputCache(nn, buffer));
+	}
+
+	return ocs;
 }
 
 

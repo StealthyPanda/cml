@@ -111,14 +111,7 @@ namespace ml
 
 
 
-class OutputCache
-{
-public:
-	ml::Vector* outputs;
-	ml::Vector& operator[](int index);
 
-	OutputCache(const NeuralNetwork& nn, const ml::Vector& input);
-};
 
 class NeuralNetwork
 {
@@ -137,14 +130,27 @@ public:
 
 	Layer& operator[] (int index);
 
-	//basically this same as (NeuralNetwork * ml::Vector), but instead of calculating the whole thing,
-	//it only does required calculations to get output, given that the outputcache oc has all the correct outputs of each layer
-	//and the nn currently only has a change in yth cell of the xth layer
-	//NOTE: these indices are in array form, so layer 1 is 0 etc
-	ml::Vector output(ml::Vector input, OutputCache oc, int xthlayer, int ythcell);
+	
 };
 
 
+class OutputCache
+{
+public:
+	ml::Vector* outputs;
+	ml::Vector& operator[](int index);
+
+	OutputCache();
+
+	OutputCache(const NeuralNetwork& nn, ml::Vector input);
+	static OutputCache* getoutputcaches(const NeuralNetwork& nn, dataset* datasets, int ndatasets, int inps);
+};
+
+//basically this same as (NeuralNetwork * ml::Vector), but instead of calculating the whole thing,
+//it only does required calculations to get output, given that the outputcache oc has all the correct outputs of each layer
+//and the nn currently only has a change in yth cell of the xth layer
+//NOTE: these indices are in array form, so layer 1 is 0 etc
+ml::Vector output(const NeuralNetwork& nn, ml::Vector& input, OutputCache oc, int xthlayer, int ythcell);
 
 
 class Trainer
@@ -169,12 +175,12 @@ public:
 
 
 	__float128 calculatecost();
-	__float128 calculatecost(dataset* datasetgroup);
+	__float128 calculatecost(dataset* datasetgroup, int ndatasetgroup);
 
 	NeuralNetwork getgradient();
 	//NeuralNetwork getgradient(dataset* datasetgroup);
 
-	__float128 getcost();
+	__float128 getcost(const NeuralNetwork& cnn, int ninputs, int noutputs, dataset *datasetgroup, int ndatasetgroup, OutputCache *ocs, int xthlayer, int ythcell);
 
 
 };

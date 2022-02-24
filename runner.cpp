@@ -127,11 +127,13 @@ int main()
 
 	NeuralNetwork epicbruhmoment = NeuralNetwork(3);
 	InputLayer il(2);
-	DenseLayer dl(2000, 2);
-	DenseLayer ol(2, 2000);
+	DenseLayer dl(1000, 2);
+	//DenseLayer al(2000, 2000);
+	DenseLayer ol(2, 1000);
 
 	epicbruhmoment << il;
 	epicbruhmoment << dl;
+	//epicbruhmoment << al;
 	epicbruhmoment << ol;
 
 	//epicbruhmoment.print();
@@ -139,13 +141,37 @@ int main()
 	Trainer tr(epicbruhmoment, "test2.td", 500);
 	tr.partition();
 
-	ml::Vector firstinp(2, tr.trainingdatasets[0].inputs), firstout(2, tr.trainingdatasets[0].outputs);
+	//ml::Vector firstinp(2, tr.trainingdatasets[1].inputs), firstout(2, tr.trainingdatasets[1].outputs);
 	//firstinp.print();
 	//firstout.print();
 
-	ml::Vector nout = (epicbruhmoment * firstinp);
-	nout.print();
-	
+	//int k = 200;
+
+	/*for (int i = 0; i < k; ++i)
+	{
+		ml::Vector nout = (epicbruhmoment * firstinp);
+		if (i == (k-1)) nout.print();
+	}*/
+
+	//OutputCache oc(epicbruhmoment, firstinp);
+	//oc.outputs[2].print();
+
+	/*for (int i = 0; i < k; ++i)
+	{
+		ml::Vector nout = output(epicbruhmoment, firstinp, oc, 2, 0);
+		if (i == (k-1)) nout.print();
+	}*/
+	OutputCache *ocs = OutputCache::getoutputcaches(epicbruhmoment, tr.trainingdatasets, tr.ntraining, tr.ninps);
+	//ocs[0][2].print();
+
+	std::cout << tr.calculatecost() << std::endl;
+
+	/*std::cout << "omae wa" << std::endl;
+	ml::Vector buffinput(2, tr.trainingdatasets[0].inputs), idealoutput(2, tr.trainingdatasets[0].outputs);
+	std::cout << "mou" << std::endl;
+	ml::Vector buffoutput = output(epicbruhmoment, buffinput, ocs[0], 0, 0);
+	std::cout << "shindeiru" << std::endl;*/
+	std::cout << tr.getcost(epicbruhmoment, tr.ninps, tr.nouts, tr.trainingdatasets, tr.ntraining, ocs, 1, 0) << std::endl;
 
 
 	auto stop = high_resolution_clock::now();

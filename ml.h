@@ -1,6 +1,6 @@
 #include <ostream>
 
-#define DEFACTFUNC ACTNONE
+#define DEFACTFUNC ACTSIGMOID
 
 void print(const __float128& afloat);
 
@@ -155,7 +155,7 @@ ml::Vector output(const NeuralNetwork& nn, ml::Vector& input, OutputCache oc, in
 //this macro defines the power to which 10 is raised to, and used as the delta x for 
 //calculation of the gradient
 //eg for -5, delx is 10^(-5)
-#define DELXPOW -5
+#define DELXPOW -1
 
 class Trainer
 {

@@ -127,9 +127,9 @@ int main()
 
 	NeuralNetwork epicbruhmoment = NeuralNetwork(3);
 	InputLayer il(2);
-	DenseLayer dl(10, 2);
-	DenseLayer al(10, 10);
-	DenseLayer ol(2, 10);
+	DenseLayer dl(4, 2);
+	DenseLayer al(4, 4);
+	DenseLayer ol(2, 4);
 
 	epicbruhmoment << il;
 	epicbruhmoment << dl;
@@ -178,10 +178,15 @@ int main()
 
 
 	NeuralNetwork grad = tr.getgradient();
-	grad = (grad * -1.0q);
-	tr.nn = tr.nn + grad;
+	grad.print();
+	//grad = (grad * -1.0q);
 
-	std::cout << tr.calculatecost() << std::endl;
+	NeuralNetwork newnn = (epicbruhmoment - grad);
+
+	Trainer tr2(newnn, "test2.td", 500);
+	tr2.partition();
+
+	std::cout << std::endl << tr2.calculatecost() << std::endl;
 
 
 	auto stop = high_resolution_clock::now();

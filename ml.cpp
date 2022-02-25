@@ -650,6 +650,7 @@ __float128 Trainer::calculatecost(dataset* datasetgroup, int ndatasetgroup)
 
 	}
 
+	cost = (cost/ndatasetgroup);
 
 	return cost;
 }
@@ -887,6 +888,8 @@ __float128 Trainer::getcost(const NeuralNetwork& cnn, int ninputs, int noutputs,
 		ml::Vector bufferoutput = output(cnn, bufferinput, ocs[i], xthlayer, ythcell);
 		cost = cost + (bufferoutput - idealoutput).getMagnitude();
 	}
+
+	cost = (cost/ndatasetgroup);
 
 	return cost;
 }

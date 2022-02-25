@@ -176,17 +176,18 @@ int main()
 	std::cout << "shindeiru" << std::endl;*/
 	//std::cout << tr.getcost(epicbruhmoment, tr.ninps, tr.nouts, tr.trainingdatasets, tr.ntraining, ocs, 3, 0) << std::endl;
 
+	int k = 10;
+	for (int i = 0; i < k; ++i)
+	{
+		NeuralNetwork grad = tr.getgradient();
+		//grad.print();
+		grad = (grad * OFFSHOOT);
 
-	NeuralNetwork grad = tr.getgradient();
-	grad.print();
-	//grad = (grad * -1.0q);
+		tr.nn = tr.nn - grad;
 
-	NeuralNetwork newnn = (epicbruhmoment - grad);
-
-	Trainer tr2(newnn, "test2.td", 500);
-	tr2.partition();
-
-	std::cout << std::endl << tr2.calculatecost() << std::endl;
+		std::cout << std::endl << tr.calculatecost() << std::endl;
+	}
+	
 
 
 	auto stop = high_resolution_clock::now();

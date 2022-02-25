@@ -916,7 +916,43 @@ OutputCache* OutputCache::getoutputcaches(const NeuralNetwork& nn, dataset* data
 
 NeuralNetwork Trainer::getgradient()
 {
-	NeuralNetwork buff = NeuralNetwork();
-	return buff;
+	NeuralNetwork gradient = *(new NeuralNetwork());
+	gradient = (this->nn * 1.0q);
 
+
+	OutputCache *ocs = OutputCache::getoutputcaches(this->nn, this->trainingdatasets, this->ntraining, this->ninps);
+	//__float128 originalcost = getcost(this->nn, this->ninps, this->nouts, this->trainingdatasets, this->ntraining, ocs, 0, 0);
+	__float128 cofx = calculatecost();
+
+
+	for (int i = 0; i < this->nn.nlayers; ++i)
+	{
+		for (int j = 0; j < this->nn[i].ncells; ++j)
+		{
+			for (int k = 0; k < this->nn[i][j].nweights; ++k)
+			{
+				NeuralNetwork buffernn = (this->nn * 1.0q);
+				buffernn[i][j][k] += powq(10.0q, DELXPOW);
+
+				__float128 cofxplusdelx = getcost(buffernn, this->ninps, this->nouts, this->trainingdatasets, this->ntraining, ocs, i, j);
+
+				gradient[i][j][k] = ((cofxplusdelx - cofx) * powq(10.0q, (-1.0q * DELXPOW)));
+
+			}
+
+			NeuralNetwork buffernn = (this->nn * 1.0q);
+			buffernn[i][j].bias += powq(10.0q, DELXPOW);
+
+			__float128 cofxplusdelx = getcost(buffernn, this->ninps, this->nouts, this->trainingdatasets, this->ntraining, ocs, i, j);
+
+			gradient[i][j].bias = ((cofxplusdelx - cofx) * powq(10.0q, (-1.0q * DELXPOW)));
+		}
+	}
+
+
+
+
+
+
+	return gradient;
 }

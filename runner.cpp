@@ -125,15 +125,15 @@ int main()
 {
 	auto start = high_resolution_clock::now();
 
-	NeuralNetwork epicbruhmoment = NeuralNetwork(4);
+	NeuralNetwork epicbruhmoment = NeuralNetwork(3);
 	InputLayer il(2);
-	DenseLayer dl(2000, 2);
-	DenseLayer al(2000, 2000);
-	DenseLayer ol(2, 2000);
+	DenseLayer dl(10, 2);
+	DenseLayer al(10, 10);
+	DenseLayer ol(2, 10);
 
 	epicbruhmoment << il;
 	epicbruhmoment << dl;
-	epicbruhmoment << al;
+	//epicbruhmoment << al;
 	epicbruhmoment << ol;
 
 	//epicbruhmoment.print();
@@ -165,6 +165,9 @@ int main()
 	//ocs[0][2].print();
 
 	std::cout << tr.calculatecost() << std::endl;
+	///std::cout << tr.getcost(epicbruhmoment, tr.ninps, tr.nouts, tr.trainingdatasets, tr.ntraining, ocs, 3, 0) << std::endl;
+	//std::cout << tr.getcost(epicbruhmoment, tr.ninps, tr.nouts, tr.trainingdatasets, tr.ntraining, ocs, 3, 0) << std::endl;
+	//std::cout << tr.getcost(epicbruhmoment, tr.ninps, tr.nouts, tr.trainingdatasets, tr.ntraining, ocs, 3, 0) << std::endl;
 
 	/*std::cout << "omae wa" << std::endl;
 	ml::Vector buffinput(2, tr.trainingdatasets[0].inputs), idealoutput(2, tr.trainingdatasets[0].outputs);
@@ -172,6 +175,13 @@ int main()
 	ml::Vector buffoutput = output(epicbruhmoment, buffinput, ocs[0], 0, 0);
 	std::cout << "shindeiru" << std::endl;*/
 	//std::cout << tr.getcost(epicbruhmoment, tr.ninps, tr.nouts, tr.trainingdatasets, tr.ntraining, ocs, 3, 0) << std::endl;
+
+
+	NeuralNetwork grad = tr.getgradient();
+	grad = (grad * -1.0q);
+	tr.nn = tr.nn + grad;
+
+	std::cout << tr.calculatecost() << std::endl;
 
 
 	auto stop = high_resolution_clock::now();

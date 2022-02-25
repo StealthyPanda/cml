@@ -152,6 +152,10 @@ public:
 //NOTE: these indices are in array form, so layer 1 is 0 etc
 ml::Vector output(const NeuralNetwork& nn, ml::Vector& input, OutputCache oc, int xthlayer, int ythcell);
 
+//this macro defines the power to which 10 is raised to, and used as the delta x for 
+//calculation of the gradient
+//eg for -5, delx is 10^(-5)
+#define DELXPOW -5
 
 class Trainer
 {

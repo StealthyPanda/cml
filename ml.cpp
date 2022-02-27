@@ -7,7 +7,7 @@
 #include <quadmath.h>
 
 #define FPREC 35
-#define FWIDTH 25
+#define FWIDTH 20
 
 void print(const __float128& afloat)
 {
@@ -30,9 +30,10 @@ std::ostream& operator<< (std::ostream& stream, __float128 afloat)
 
 }
 
-char* strepr(__float128 afloat)
+char* strepr(const __float128& afloat)
 {
-	static char buffer[FPREC];
+	//static char buffer[FPREC];
+	char *buffer = new char[FPREC];
 
 	quadmath_snprintf(buffer, sizeof buffer, "%+-#46.*Qe", FWIDTH, afloat);
 
@@ -232,19 +233,25 @@ void NeuralNetwork::save(const char* rawname)
 
 	savefile.open(rawname, std::ios::out);
 
+	savefile << std::to_string(this->nlayers) << std::endl;
+
+	const char* aah = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaah ";
+
 	if (savefile)
 	{
 		for (int i = 0; i < this->nlayers; ++i)
 		{
 			Layer bufflayer = this->layers[i];
+			savefile << std::to_string(this->layers[i].ncells) << " " << std::to_string(this->layers[i][0].nweights) << " ";
 			for (int j = 0; j < bufflayer.ncells; ++j)
 			{
 				Cell buffcell = bufflayer.layer[j];
 				for (int k = 0; k < buffcell.nweights; ++k)
 				{
-					savefile << strepr(buffcell.weights[k]) << ",";
+					savefile << strepr(buffcell.weights[k]) << " ";
 				}
-				savefile << strepr(buffcell.bias) << "|";
+				if (j == (bufflayer.ncells - 1)) savefile << strepr(buffcell.bias);
+				else savefile << strepr(buffcell.bias) << " ";
 			}
 			savefile << "\n";
 		}
@@ -312,7 +319,10 @@ void ml::Vector::print()
 
 __float128 ml::Vector::getMagnitude()
 {
-	static __float128 mag = 0.0q;
+	//static __float128 mag = 0.0q;
+	__float128 mag = *(new __float128(0.0q));
+	//__float128 mag = *(new __float128());
+	//mag = 0.0q;
 
 	for (int i = 0; i < this->size; ++i)
 	{
@@ -346,10 +356,10 @@ __float128 operator * (ml::Vector &v, Cell &cell)
 
 ml::Vector operator + (ml::Vector &v1, ml::Vector &v2)
 {
-	static ml::Vector sum;
+	//static ml::Vector sum;
+	ml::Vector sum = *(new ml::Vector(v1.size));
 	if (v1.size != v2.size) return sum;
 
-	sum = *(new ml::Vector(v1.size));
 	for (int i = 0; i < v1.size; ++i)
 	{
 		sum.list[i] = v1.list[i] + v2.list[i];
@@ -357,12 +367,10 @@ ml::Vector operator + (ml::Vector &v1, ml::Vector &v2)
 
 	return sum;
 }
-ml::Vector operator * (__float128 &fscalar, ml::Vector &v1)
+ml::Vector operator * (__float128 fscalar, ml::Vector &v1)
 {
-	static ml::Vector prod;
-	
-
-	prod = *(new ml::Vector(v1.size));
+	//static ml::Vector prod;
+	ml::Vector prod = *(new ml::Vector(v1.size));
 	for (int i = 0; i < v1.size; ++i)
 	{
 		prod.list[i] = v1.list[i] * fscalar;
@@ -370,7 +378,7 @@ ml::Vector operator * (__float128 &fscalar, ml::Vector &v1)
 
 	return prod;
 }
-ml::Vector operator * (ml::Vector &v2 ,__float128 &fscalar)
+ml::Vector operator * (ml::Vector &v2 ,__float128 fscalar)
 {
 	return (fscalar * v2);
 }
@@ -566,6 +574,59 @@ Trainer::Trainer()
 NeuralNetwork::NeuralNetwork()
 {
 }
+
+NeuralNetwork NeuralNetwork::extract(const char* filename)
+{
+	std::fstream datafile;
+	datafile.open(filename, std::ios::in);
+	std::string buff;
+
+	int nlayersfromfile;
+	datafile >> nlayersfromfile;
+
+	NeuralNetwork extractednn = *(new NeuralNetwork(nlayersfromfile));
+
+
+	for (int i = 0; i < nlayersfromfile; ++i)
+	{
+		
+		int ncellsfromfile, nweightsfromfile;
+		datafile >> ncellsfromfile;
+		datafile >> nweightsfromfile;
+
+		Cell *buffercells = new Cell[ncellsfromfile];
+
+		for (int j = 0; j < ncellsfromfile; ++j)
+		{
+			Cell buffcell = *(new Cell(nweightsfromfile));
+			for (int k = 0; k < nweightsfromfile; ++k)
+			{
+
+				datafile >> buff;
+				buffcell[k] = strtoflt128(buff.c_str(), NULL);
+				
+			}
+
+			datafile >> buff;
+			buffcell.bias = strtoflt128(buff.c_str(), NULL);
+
+			buffercells[j] = buffcell;
+
+		}
+
+		Layer bufferlayer = *(new Layer(buffercells, ncellsfromfile));
+
+		extractednn << bufferlayer;
+
+	}
+
+
+
+	datafile.close();
+
+	return extractednn;
+}
+
 
 Trainer::Trainer(NeuralNetwork &nn, const char* filename, int ndatasets)
 {
@@ -914,12 +975,15 @@ OutputCache* OutputCache::getoutputcaches(const NeuralNetwork& nn, dataset* data
 }
 
 
-
-
+//IMPORTANT QUESTION:
+//Should we be gradienting the input layer as well?
+//for now it is gradiented, and to not gradient the first layer simply start i from 1 in the loop in get gradient
+//but there are some weird problems when gradienting is turned off for first layer
 
 NeuralNetwork Trainer::getgradient()
 {
 	NeuralNetwork gradient = *(new NeuralNetwork());
+
 	gradient = (this->nn * 1.0q);
 
 

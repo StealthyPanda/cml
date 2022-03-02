@@ -6,6 +6,9 @@
 //using namespace ml;
 using namespace std::chrono;
 
+//IMPORTANT NOTE:
+//IMPLEMENT ~ClassName() (destructor) for all the classes to make sure memory is managed tight and stuff
+
 int main()
 {
 	auto start = high_resolution_clock::now();
@@ -13,17 +16,7 @@ int main()
 	//std::cout << RAND_MAX << std::endl;
 
 
-	NeuralNetwork ellipseboi(3);
-
-	InputLayer il(2);
-	DenseLayer dl(4, 2);
-	DenseLayer ol(2, 4);
-
-	ellipseboi << il;
-	ellipseboi << dl;
-	ellipseboi << ol;
-
-
+	NeuralNetwork ellipseboi = NeuralNetwork::extract("ellipseboi18.nn");
 
 	Trainer somethingelse(ellipseboi, "test2.td", 1000);
 	somethingelse.partition();
@@ -88,17 +81,18 @@ int main()
 				std::cout << std::endl << cost << std::endl;
 				if (cost < 0.4)
 				{
-					std::string name = "bruh" + std::to_string(j) + ".nn";
+					std::string name = "ellipseboi" + std::to_string(j) + ".nn";
 					tr.nn.save(name.c_str());
 				}
 			}
 		}
+
+		//delete &changed;
 	}
 
 	ml::Vector cv(nnn, costs);
 
 	cv.print();
-
 
 
 	auto stop = high_resolution_clock::now();

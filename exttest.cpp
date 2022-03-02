@@ -6,7 +6,7 @@
 int main()
 {
 
-	NeuralNetwork bruh = NeuralNetwork::extract("bruh15.nn");
+	NeuralNetwork bruh = NeuralNetwork::extract("bruh16.nn");
 
 	bruh.print();
 

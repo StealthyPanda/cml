@@ -11,6 +11,7 @@ using namespace std::chrono;
 
 int main()
 {
+	
 	auto start = high_resolution_clock::now();
 
 	//std::cout << RAND_MAX << std::endl;
@@ -21,6 +22,7 @@ int main()
 	Trainer somethingelse(ellipseboi, "test2.td", 1000);
 	somethingelse.partition();
 
+	std::cout << "EPIC BRUH MOMENT" << std::endl;
 	std::cout << somethingelse.calculatecost() << std::endl;
 
 	int nnn = 20;

@@ -5,6 +5,8 @@
 void print(const __float128& afloat);
 
 std::ostream& operator<< (std::ostream& stream, __float128 afloat);
+std::fstream& writetofile (std::fstream& stream, __float128 afloat);
+
 
 char* strepr(const __float128& afloat);
 

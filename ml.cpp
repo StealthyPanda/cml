@@ -30,6 +30,18 @@ std::ostream& operator<< (std::ostream& stream, __float128 afloat)
 
 }
 
+std::fstream& writetofile (std::fstream& stream, __float128 afloat)
+{
+	char buffer[FPREC];
+
+	quadmath_snprintf(buffer, sizeof buffer, "%+-#46.*Qe", FWIDTH, afloat);
+
+	stream << buffer;
+
+	return stream;
+
+}
+
 char* strepr(const __float128& afloat)
 {
 	//static char buffer[FPREC];
@@ -248,10 +260,12 @@ void NeuralNetwork::save(const char* rawname)
 				Cell buffcell = bufflayer.layer[j];
 				for (int k = 0; k < buffcell.nweights; ++k)
 				{
-					savefile << strepr(buffcell.weights[k]) << " ";
+					//savefile << strepr(buffcell.weights[k]) << " ";
+					writetofile(savefile, buffcell.weights[k]);
+					savefile << " ";
 				}
-				if (j == (bufflayer.ncells - 1)) savefile << strepr(buffcell.bias);
-				else savefile << strepr(buffcell.bias) << " ";
+				if (j == (bufflayer.ncells - 1)) writetofile(savefile, buffcell.bias);
+				else writetofile(savefile, buffcell.bias) << " ";
 			}
 			savefile << "\n";
 		}

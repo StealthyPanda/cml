@@ -247,8 +247,6 @@ void NeuralNetwork::save(const char* rawname)
 
 	savefile << std::to_string(this->nlayers) << std::endl;
 
-	const char* aah = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaah ";
-
 	if (savefile)
 	{
 		for (int i = 0; i < this->nlayers; ++i)

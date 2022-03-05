@@ -68,7 +68,7 @@ int main()
 		//tr.nn.print();
 
 
-		int k = 5;
+		int k = 10;
 		for (int i = 0; i < k; ++i)
 		{
 			NeuralNetwork grad = tr.getgradient();

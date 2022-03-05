@@ -6,7 +6,7 @@
 
 int main()
 {
-	NeuralNetwork ellipseboi = NeuralNetwork::extract("ellipseboi18.nn");
+	NeuralNetwork ellipseboi = NeuralNetwork::extract("ellipseboi19.nn");
 
 	Trainer somethingelse(ellipseboi, "test2.td", 1000);
 	somethingelse.partition();

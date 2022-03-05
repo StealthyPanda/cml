@@ -6,9 +6,6 @@
 //using namespace ml;
 using namespace std::chrono;
 
-//IMPORTANT NOTE:
-//IMPLEMENT ~ClassName() (destructor) for all the classes to make sure memory is managed tight and stuff
-
 int main()
 {
 	auto start = high_resolution_clock::now();
@@ -16,7 +13,15 @@ int main()
 	//std::cout << RAND_MAX << std::endl;
 
 
-	NeuralNetwork ellipseboi = NeuralNetwork::extract("ellipseboi19.nn");
+	NeuralNetwork ellipseboi(3);
+
+	InputLayer il(2);
+	DenseLayer dl(4, 2);
+	DenseLayer ol(2, 4);
+
+	ellipseboi << il;
+	ellipseboi << dl;
+	ellipseboi << ol;
 
 	Trainer somethingelse(ellipseboi, "test2.td", 1000);
 	somethingelse.partition();
@@ -28,8 +33,7 @@ int main()
 	srand(time(0));
 	__float128 costs[nnn];
 
-	__float128 lowest = 1.0q;
-	NeuralNetwork lowestnn;
+
 
 
 	for(int j = 0; j < nnn; j++)
@@ -80,30 +84,18 @@ int main()
 				__float128 cost = tr.calculatecost();
 				costs[j] = cost;
 				std::cout << std::endl << cost << std::endl;
-				/*if (cost < 0.4)
+				if (cost < 0.4)
 				{
-					std::string name = "networks/ellipseboi" + std::to_string(j) + ".nn";
+					std::string name = "bruh" + std::to_string(j) + ".nn";
 					tr.nn.save(name.c_str());
-				}*/
-				if (cost < lowest)
-				{
-					lowest = cost;
-					lowestnn = (tr.nn * 1.0q);
 				}
 			}
 		}
-
-		//NeuralNetwork *cp = &changed;
-
-		//delete cp;
 	}
-
-	lowestnn.save("ellipseboi19.nn");
 
 	ml::Vector cv(nnn, costs);
 
 	cv.print();
-
 
 
 

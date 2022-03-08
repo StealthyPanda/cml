@@ -7,6 +7,9 @@
 
 void print(const __float128& afloat);
 
+static volatile int nncount = 0;
+static volatile int occount = 0;
+
 std::ostream& operator<< (std::ostream& stream, __float128 afloat);
 std::fstream& writetofile (std::fstream& stream, __float128 afloat);
 
@@ -43,6 +46,8 @@ public:
 
 	__float128 (*actfunc)(const __float128& val);
 	void setactfunc( __float128 (*actfunc)(const __float128& val) );
+
+	//~Cell();
 };
 
 
@@ -68,6 +73,8 @@ public:
 
 	__float128 (*actfunc)(const __float128& val);
 	void setactfunc( __float128 (*actfunc)(const __float128& val) );
+
+	//~Layer();
 };
 
 class InputLayer : public Layer
@@ -111,6 +118,8 @@ namespace ml
 
 
 		__float128& operator [] (int n);
+
+		//~Vector();
 	};
 }
 
@@ -137,7 +146,8 @@ public:
 
 	Layer& operator[] (int index);
 
-	
+
+	//~NeuralNetwork();
 };
 
 
@@ -148,7 +158,7 @@ public:
 	ml::Vector& operator[](int index);
 
 	OutputCache();
-
+	//~OutputCache();
 	OutputCache(const NeuralNetwork& nn, ml::Vector input);
 	static OutputCache* getoutputcaches(const NeuralNetwork& nn, dataset* datasets, int ndatasets, int inps);
 };

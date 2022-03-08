@@ -68,6 +68,8 @@ NeuralNetwork::NeuralNetwork(int nlayers)
 	this->layers = new Layer[nlayers];
 	this->nlayers = nlayers;
 	this->index = 0;
+	nncount++;
+	std::cout << nncount << std::endl;
 }
 
 NeuralNetwork::NeuralNetwork(int nlayers, InputLayer il)
@@ -76,6 +78,8 @@ NeuralNetwork::NeuralNetwork(int nlayers, InputLayer il)
 	this->nlayers = nlayers;
 	this->index = 1;
 	this->layers[0] =  il;
+	nncount++;
+	std::cout << nncount << std::endl;
 }
 
 void NeuralNetwork::print()
@@ -585,6 +589,8 @@ Trainer::Trainer()
 
 NeuralNetwork::NeuralNetwork()
 {
+	nncount++;
+	std::cout << nncount << std::endl;
 }
 
 NeuralNetwork NeuralNetwork::extract(const char* filename)
@@ -893,6 +899,8 @@ OutputCache::OutputCache(const NeuralNetwork& nn, ml::Vector input)
 	}
 
 	this->outputs = outs;
+	occount++;
+	std::cout << "oc: " << occount << std::endl;
 }
 
 
@@ -971,6 +979,8 @@ __float128 Trainer::getcost(const NeuralNetwork& cnn, int ninputs, int noutputs,
 
 OutputCache::OutputCache()
 {
+	occount++;
+	std::cout << "oc: " << occount << std::endl;
 }
 
 OutputCache* OutputCache::getoutputcaches(const NeuralNetwork& nn, dataset* datasets, int ndatasets, int ninps)
@@ -1079,7 +1089,7 @@ NeuralNetwork Trainer::getgradient(dataset* datasetgroup, int ndatasetgroup)
 
 
 
-
+	delete[] ocs;
 
 	return gradient;
 }
@@ -1112,3 +1122,28 @@ void Trainer::lineartrain(int generations, __float128 offshoot)
 {
 	lineartrain(this->trainingdatasets, this->ntraining, generations, offshoot);
 }
+
+/*
+Cell::~Cell()
+{
+	delete[] this->weights;
+}
+Layer::~Layer()
+{
+	delete[] this->layer;
+}
+NeuralNetwork::~NeuralNetwork()
+{
+	delete[] this->layers;
+}
+*/
+/*
+ml::Vector::~Vector()
+{
+	delete[] this->list;
+}*/
+
+/*OutputCache::~OutputCache()
+{
+	delete[] this->outputs;
+}*/

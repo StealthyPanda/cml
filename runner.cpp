@@ -10,27 +10,33 @@ int main()
 {
 	auto start = high_resolution_clock::now();
 
-
-
-	NeuralNetwork nn = NeuralNetwork(3);
+	
+	NeuralNetwork nn = NeuralNetwork(4);
 
 	InputLayer il(2);
-	DenseLayer dl1(3, 2);
-	DenseLayer dl2(6, 6);
-	DenseLayer ol(2, 3);
+	DenseLayer dl1(7, 2);
+	DenseLayer dl2(7, 7);
+	DenseLayer ol(2, 7);
 
-	nn << il << dl1 << ol;
+	nn << il << dl1 << dl2 << ol;
 
 	//NeuralNetwork nn = NeuralNetwork::extract("threeone.nn");
 
 	Trainer atrainer(nn, "test3.td", 9000);
 	atrainer.partition();
 
-	atrainer.lineartrain(25, 100);
+	char bruh;
+
+	std::cout << nncount << std::endl;
+
+	std::cin>>bruh;
+
+	atrainer.lineartrain(5, 100);
 
 	atrainer.nn.save("threeone.nn");
 
-
+	std::cout << "NeuralNetwork count: " << nncount << std::endl;
+	std::cout << "OutputCache count: " << occount << std::endl;
 
 
 	auto stop = high_resolution_clock::now();

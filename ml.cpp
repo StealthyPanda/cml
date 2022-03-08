@@ -1005,7 +1005,7 @@ NeuralNetwork Trainer::getgradient()
 	__float128 delx = powq(10.0q, DELXPOW);
 
 
-	for (int i = 0; i < this->nn.nlayers; ++i)
+	for (int i = GRADSTART; i < this->nn.nlayers; ++i)
 	{
 		for (int j = 0; j < this->nn[i].ncells; ++j)
 		{
@@ -1051,7 +1051,7 @@ NeuralNetwork Trainer::getgradient(dataset* datasetgroup, int ndatasetgroup)
 	__float128 delx = powq(10.0q, DELXPOW);
 
 
-	for (int i = 0; i < this->nn.nlayers; ++i)
+	for (int i = GRADSTART; i < this->nn.nlayers; ++i)
 	{
 		for (int j = 0; j < this->nn[i].ncells; ++j)
 		{
@@ -1090,6 +1090,7 @@ void Trainer::lineartrain(dataset* datasetgroup, int ndatasetgroup, int generati
 	__float128 initcost = calculatecost(datasetgroup, ndatasetgroup);
 	for (int i = 0; i < generations; ++i)
 	{
+		std::cout << "Generation " << i << std::endl;
 		NeuralNetwork gradient = getgradient(datasetgroup, ndatasetgroup);
 		gradient = gradient * offshoot;
 		this->nn = this->nn - gradient;
@@ -1106,4 +1107,8 @@ void Trainer::lineartrain(dataset* datasetgroup, int ndatasetgroup, int generati
 void Trainer::lineartrain(int generations)
 {
 	lineartrain(this->trainingdatasets, this->ntraining, generations, 1);
+}
+void Trainer::lineartrain(int generations, __float128 offshoot)
+{
+	lineartrain(this->trainingdatasets, this->ntraining, generations, offshoot);
 }

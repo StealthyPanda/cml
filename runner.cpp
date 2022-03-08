@@ -15,9 +15,9 @@ int main()
 	NeuralNetwork nn = NeuralNetwork(3);
 
 	InputLayer il(2);
-	DenseLayer dl1(6, 2);
+	DenseLayer dl1(3, 2);
 	DenseLayer dl2(6, 6);
-	DenseLayer ol(2, 6);
+	DenseLayer ol(2, 3);
 
 	nn << il << dl1 << ol;
 
@@ -26,7 +26,7 @@ int main()
 	Trainer atrainer(nn, "test3.td", 9000);
 	atrainer.partition();
 
-	atrainer.lineartrain(100);
+	atrainer.lineartrain(25, 100);
 
 	atrainer.nn.save("threeone.nn");
 

@@ -2,6 +2,9 @@
 
 #define DEFACTFUNC ACTSIGMOID
 
+//set this to 0 for gradienting the inputlayer as well; 1 to skip it
+#define GRADSTART 1
+
 void print(const __float128& afloat);
 
 std::ostream& operator<< (std::ostream& stream, __float128 afloat);
@@ -196,6 +199,7 @@ public:
 	void lineartrain(dataset* datasetgroup, int ndatasetgroup, int generations);
 	void lineartrain(dataset* datasetgroup, int ndatasetgroup, int generations, __float128 offshoot);
 	void lineartrain(int generations);
+	void lineartrain(int generations, __float128 offshoot);
 
 };
 

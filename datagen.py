@@ -11,8 +11,8 @@ def rule(x):
 
 
 #print(rule([float(input('Enter x: ')), float(input('Enter y: '))]))
-with open('test2.td', 'a+') as file:
-	for i in range(500):
+with open('test3.td', 'a+') as file:
+	for i in range(10000):
 		x = 4 * random()
 		y = 4 * random()
 

@@ -187,10 +187,15 @@ public:
 	__float128 calculatecost(dataset* datasetgroup, int ndatasetgroup);
 
 	NeuralNetwork getgradient();
-	//NeuralNetwork getgradient(dataset* datasetgroup);
+	NeuralNetwork getgradient(dataset* datasetgroup, int ndatasetgroup);
 
 	__float128 getcost(const NeuralNetwork& cnn, int ninputs, int noutputs, dataset *datasetgroup, int ndatasetgroup, OutputCache *ocs, int xthlayer, int ythcell);
 
+
+	//default offshoot is 1
+	void lineartrain(dataset* datasetgroup, int ndatasetgroup, int generations);
+	void lineartrain(dataset* datasetgroup, int ndatasetgroup, int generations, __float128 offshoot);
+	void lineartrain(int generations);
 
 };
 

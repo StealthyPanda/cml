@@ -13,11 +13,28 @@ int main()
 {
 	
 	auto start = high_resolution_clock::now();
+	srand(time(0));
 
 	//std::cout << RAND_MAX << std::endl;
 
 
-	NeuralNetwork ellipseboi = NeuralNetwork::extract("ellipseboi19.nn");
+	//NeuralNetwork ellipseboi = NeuralNetwork::extract("ellipseboi19.nn");
+	NeuralNetwork ellipseboi = NeuralNetwork(4);
+
+	InputLayer il = InputLayer(2);
+	DenseLayer dl1 = DenseLayer(4, 2);
+	DenseLayer dl2 = DenseLayer(4, 4);
+	DenseLayer ol = DenseLayer(2, 4);
+
+	ellipseboi << il << dl1 << dl2 << ol;
+
+	__float128 factor = 2.0q * powq(10.0q, -8.0q);
+	__float128 randval = 2.0q * (rand() * factor * powq(-1, (rand() % 2)));
+
+	ellipseboi = (ellipseboi * randval);
+
+	//NeuralNetwork ellipseboi = NeuralNetwork::extract("newboi.nn");
+
 
 	Trainer somethingelse(ellipseboi, "test2.td", 1000);
 	somethingelse.partition();
@@ -25,13 +42,11 @@ int main()
 	std::cout << "EPIC BRUH MOMENT" << std::endl;
 	std::cout << somethingelse.calculatecost() << std::endl;
 
-	int nnn = 20;
-	__float128 factor = powq(10.0q, -8.0q);
-	srand(time(0));
+	int nnn = 10;
 	__float128 costs[nnn];
 
-	__float128 lowest = 1.0q;
 	NeuralNetwork lowestnn;
+	__float128 lowest = 1.0q;
 
 
 	for(int j = 0; j < nnn; j++)
@@ -100,7 +115,17 @@ int main()
 		//delete cp;
 	}
 
-	lowestnn.save("ellipseboi19.nn");
+	//lowestnn.save("newboi.nn");
+
+	NeuralNetwork previous = NeuralNetwork::extract("newboi.nn");
+	Trainer prevtrainer(previous, "test2d.td", 1000);
+	prevtrainer.partition();
+	__float128 prevcost = prevtrainer.calculatecost();
+
+	if (lowest < prevcost)
+	{
+		lowestnn.save("newboi.nn");
+	}
 
 	ml::Vector cv(nnn, costs);
 

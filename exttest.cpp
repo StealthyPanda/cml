@@ -23,8 +23,22 @@ int main(int argc, char const *argv[])
 {
 	//std::string name = "networks/ellipseboi" + std::to_string(argv[0]) + ".nn";
 
-	std::cout << argv[1] << std::endl;
-	NeuralNetwork bruh = NeuralNetwork::extract(argv[1]);
+	//std::cout << argv[1] << std::endl;
+
+	/*NeuralNetwork ellipseboi = NeuralNetwork(4);
+
+	InputLayer il = InputLayer(2);
+	DenseLayer dl1 = DenseLayer(4, 2);
+	DenseLayer dl2 = DenseLayer(4, 4);
+	DenseLayer ol = DenseLayer(2, 4);
+
+	ellipseboi << il << dl1 << dl2 << ol;
+
+	ellipseboi.print();
+
+	ellipseboi.save("newboi.nn");*/
+
+	NeuralNetwork bruh = NeuralNetwork::extract("newboi.nn");
 
 	bruh.print();
 

@@ -1037,3 +1037,73 @@ NeuralNetwork Trainer::getgradient()
 
 	return gradient;
 }
+
+NeuralNetwork Trainer::getgradient(dataset* datasetgroup, int ndatasetgroup)
+{
+	NeuralNetwork gradient = *(new NeuralNetwork());
+
+	gradient = (this->nn * 1.0q);
+
+
+	OutputCache *ocs = OutputCache::getoutputcaches(this->nn, datasetgroup, ndatasetgroup, this->ninps);
+	//__float128 originalcost = getcost(this->nn, this->ninps, this->nouts, this->trainingdatasets, this->ntraining, ocs, 0, 0);
+	__float128 cofx = calculatecost();
+	__float128 delx = powq(10.0q, DELXPOW);
+
+
+	for (int i = 0; i < this->nn.nlayers; ++i)
+	{
+		for (int j = 0; j < this->nn[i].ncells; ++j)
+		{
+			for (int k = 0; k < this->nn[i][j].nweights; ++k)
+			{
+				NeuralNetwork buffernn = (this->nn * 1.0q);
+				buffernn[i][j][k] += delx;
+				//if ((i == 0) and (j == 0) and (k == 0)) buffernn.print();
+
+				__float128 cofxplusdelx = getcost(buffernn, this->ninps, this->nouts, datasetgroup, ndatasetgroup, ocs, i, j);
+
+				gradient[i][j][k] = ((cofxplusdelx - cofx) / delx);
+
+			}
+
+			NeuralNetwork buffernn = (this->nn * 1.0q);
+			buffernn[i][j].bias += delx;
+
+			__float128 cofxplusdelx = getcost(buffernn, this->ninps, this->nouts, datasetgroup, ndatasetgroup, ocs, i, j);
+
+			gradient[i][j].bias = ((cofxplusdelx - cofx) / delx);
+		}
+	}
+
+
+
+
+
+
+	return gradient;
+}
+
+void Trainer::lineartrain(dataset* datasetgroup, int ndatasetgroup, int generations, __float128 offshoot)
+{
+	std::cout << "Started training the network..." << std::endl;
+	__float128 initcost = calculatecost(datasetgroup, ndatasetgroup);
+	for (int i = 0; i < generations; ++i)
+	{
+		NeuralNetwork gradient = getgradient(datasetgroup, ndatasetgroup);
+		gradient = gradient * offshoot;
+		this->nn = this->nn - gradient;
+	}
+	__float128 finalcost = calculatecost(datasetgroup, ndatasetgroup);
+	std::cout << "End of training" << std::endl;
+	std::cout << "Cost before: " << initcost << std::endl;
+	std::cout << "Cost after: " << finalcost << std::endl;
+}
+void Trainer::lineartrain(dataset* datasetgroup, int ndatasetgroup, int generations)
+{
+	lineartrain(datasetgroup, ndatasetgroup, generations, 1);
+}
+void Trainer::lineartrain(int generations)
+{
+	lineartrain(this->trainingdatasets, this->ntraining, generations, 1);
+}

@@ -6,6 +6,21 @@
 
 using namespace std::chrono;
 
+long long int bytestaken = 0, bytesreleased = 0;
+
+void* operator new (size_t size)
+{
+	bytestaken += size;
+	return malloc(size);
+}
+
+void operator delete (void* memory, size_t size)
+{
+	bytesreleased += size;
+	free(memory);
+}
+
+
 int main()
 {
 	auto start = high_resolution_clock::now();
@@ -37,6 +52,8 @@ int main()
 
 	std::cout << "NeuralNetwork count: " << nncount << std::endl;
 	std::cout << "OutputCache count: " << occount << std::endl;
+
+	std::cout << "Bytes taken: " << bytestaken << " Bytes released: " << bytesreleased <<std::endl;
 
 
 	auto stop = high_resolution_clock::now();

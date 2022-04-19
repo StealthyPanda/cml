@@ -1,38 +1,68 @@
 #include <iostream>
-#include <chrono>
-#include "ml.h"
 
-#include <quadmath.h>
+int taken = 0, released = 0;
+void* operator new(size_t size)
+{
+	std::cout << "Called new for " << size << std::endl;
+	taken += size;
+	return malloc(size);
+}
 
-//using namespace ml;
-using namespace std::chrono;
+void* operator new[](size_t size)
+{
+	std::cout << "Called new[] for " << size << std::endl;
+	taken += size;
+	return malloc(size);
+}
+
+void operator delete(void* pointer, size_t size)
+{
+	std::cout << "Called delete for " << size << std::endl;
+	released += size;
+	free(pointer);
+}
+
+void operator delete[](void* pointer, size_t size)
+{
+	std::cout << "Called delete[] for " << size << std::endl;
+	released += size;
+	free(pointer);
+}
+
+
+
+
+class anobj
+{
+public:
+	anobj();
+	int* apointer;
+
+	void initialise(int nbytes);
+};
+
+anobj::anobj()
+{
+
+}
+
+void anobj::initialise(int nbytes)
+{
+	int *alist = new int[nbytes];
+	for (int i = 0; i < nbytes; i++)
+	{
+		alist[i] = (i * i);
+	}
+	
+	this->apointer = alist;
+}
 
 int main()
 {
+	anobj myobj = anobj();
+	myobj.initialise(100);
 
-
-
-	for (int i = 0; i < 10; ++i)
-	{
-		ml::Vector bruh(3);
-		ml::Vector moment(3);
-
-		moment[0] = 3;
-		moment[1] = 4;
-		moment[2] = 12;
-
-		//bruh.print();
-		moment.print();
-
-		__float128 fi = __float128(i);
-
-		ml::Vector epic = moment * fi;
-
-		epic.print();
-
-		std::cout << std::endl;
-	}
-	
+	delete[] myobj.apointer;
 
 	return 0;
 }

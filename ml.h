@@ -47,7 +47,7 @@ public:
 	__float128 (*actfunc)(const __float128& val);
 	void setactfunc( __float128 (*actfunc)(const __float128& val) );
 
-	//~Cell();
+	~Cell();
 };
 
 
@@ -74,7 +74,7 @@ public:
 	__float128 (*actfunc)(const __float128& val);
 	void setactfunc( __float128 (*actfunc)(const __float128& val) );
 
-	//~Layer();
+	~Layer();
 };
 
 class InputLayer : public Layer
@@ -119,7 +119,7 @@ namespace ml
 
 		__float128& operator [] (int n);
 
-		//~Vector();
+		~Vector();
 	};
 }
 
@@ -147,7 +147,7 @@ public:
 	Layer& operator[] (int index);
 
 
-	//~NeuralNetwork();
+	~NeuralNetwork();
 };
 
 
@@ -158,7 +158,7 @@ public:
 	ml::Vector& operator[](int index);
 
 	OutputCache();
-	//~OutputCache();
+	~OutputCache();
 	OutputCache(const NeuralNetwork& nn, ml::Vector input);
 	static OutputCache* getoutputcaches(const NeuralNetwork& nn, dataset* datasets, int ndatasets, int inps);
 };
@@ -189,6 +189,7 @@ public:
 	void partition(float ratio);
 
 	Trainer();
+	~Trainer();
 	Trainer(NeuralNetwork &nn, const char* datafilename, int ndatasets);
 	
 

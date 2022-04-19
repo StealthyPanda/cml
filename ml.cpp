@@ -1123,7 +1123,7 @@ void Trainer::lineartrain(int generations, __float128 offshoot)
 	lineartrain(this->trainingdatasets, this->ntraining, generations, offshoot);
 }
 
-/*
+
 Cell::~Cell()
 {
 	delete[] this->weights;
@@ -1136,14 +1136,19 @@ NeuralNetwork::~NeuralNetwork()
 {
 	delete[] this->layers;
 }
-*/
-/*
+
+Trainer::~Trainer()
+{
+	
+}
+
+
 ml::Vector::~Vector()
 {
 	delete[] this->list;
-}*/
+}
 
-/*OutputCache::~OutputCache()
+OutputCache::~OutputCache()
 {
 	delete[] this->outputs;
-}*/
+}
